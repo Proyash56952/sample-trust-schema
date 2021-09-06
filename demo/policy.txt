@@ -1,0 +1,1 @@
+MyHouse command switch on <= Myhouse operator key keyvalue
