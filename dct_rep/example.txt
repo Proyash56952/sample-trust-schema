@@ -1,0 +1,7 @@
+_network: AliceNetOps
+
+_domain: dnmp
+
+_keyinfo: KEY
+
+dnmpCert: _network/_domain/_keyinfo
