@@ -5,7 +5,8 @@ from dctParser import dctParser
 from dctVisitor import dctVisitor
 import sys
 
-Dict = {}
+idDict = {}
+defDict = {}
 
 class Schema:
     pass
@@ -30,24 +31,32 @@ class CustomVisitor(dctVisitor):
     
     def visitDefinition(self, ctx:dctParser.DefinitionContext):
         id = ctx.identifier().accept(self)
-        #if(id.type == 'uString'):
-            #print("hola")
-        exp = ctx.expression().accept(self)
-        print(exp)
+        #print(ctx.STRING())
         
         if(id.type == 'uString'):
-            Dict[id.value] = exp.getText()
-        print(Dict)
+            idDict[id.value] = ctx.STRING().getText()
+            #print(Dict)
+        
+        elif(id.type == 'string'):
+            exp = ctx.expression().accept(self)
+            defDict[id.value] = exp
+        
+        #exp = ctx.expression().accept(self)
+        #print(exp)
             
     def visitIdentifier(self, ctx:dctParser.IdentifierContext):
         id = Identifier()
         if(ctx.STRING()):
+            #print("hi")
             id.type = 'string'
             id.value = ctx.STRING().getText()
             
+            
         if(ctx.ustring()):
+            #print("hola")
             id.type = 'uString'
             id.value = ctx.ustring().accept(self)
+            #print(id.value)
             
         return id
             
@@ -59,11 +68,16 @@ class CustomVisitor(dctVisitor):
         return ctx.HASH().getText() + ctx.STRING().getText()
         
     def visitExpression(self, ctx:dctParser.ExpressionContext):
-        if (ctx.STRING()):
-            return ctx.STRING()
-        elif (ctx.name()):
-            print("hu")
-
+        if (ctx.name()):
+            c = ctx.name().accept(self)
+        return c
+    
+    def visitName(self, ctx:dctParser.NameContext):
+        ids = []
+        for c in ctx.identifier():
+            ids.append(c.accept(self))
+        return ids
+            
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
     lexer = dctLexer(schema_src_code)
@@ -77,6 +91,20 @@ if err == 0:
     visitor = CustomVisitor()
     try:
         tree.accept(visitor)
+        print(idDict)
+        #print(defDict)
+
     except Exception as e:
         print("\nSyntax error occurred in the policy file!\n")
         sys.exit(1)
+    
+    for key,values in defDict.items():
+        res = ''
+        res = res + key + ' : '
+        for v in values:
+            if(v.type == 'uString'):
+                res += idDict[v.value] + '/'
+            else:
+                res += v.value
+    print(res)
+        

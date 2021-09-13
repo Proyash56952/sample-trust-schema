@@ -11,25 +11,26 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\b")
-        buf.write(":\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\t")
+        buf.write(">\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
         buf.write("\t\b\4\t\t\t\4\n\t\n\3\2\6\2\26\n\2\r\2\16\2\27\3\3\3")
-        buf.write("\3\3\3\3\3\3\4\3\4\5\4 \n\4\3\5\3\5\3\5\6\5%\n\5\r\5\16")
-        buf.write("\5&\3\5\3\5\3\6\3\6\3\6\5\6.\n\6\3\7\3\7\3\b\3\b\3\b\3")
-        buf.write("\t\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4\6\b\n\f\16\20\22\2\2")
-        buf.write("\2\65\2\25\3\2\2\2\4\31\3\2\2\2\6\37\3\2\2\2\b$\3\2\2")
-        buf.write("\2\n-\3\2\2\2\f/\3\2\2\2\16\61\3\2\2\2\20\64\3\2\2\2\22")
-        buf.write("\67\3\2\2\2\24\26\5\4\3\2\25\24\3\2\2\2\26\27\3\2\2\2")
-        buf.write("\27\25\3\2\2\2\27\30\3\2\2\2\30\3\3\2\2\2\31\32\5\n\6")
-        buf.write("\2\32\33\7\4\2\2\33\34\5\6\4\2\34\5\3\2\2\2\35 \5\b\5")
-        buf.write("\2\36 \7\7\2\2\37\35\3\2\2\2\37\36\3\2\2\2 \7\3\2\2\2")
-        buf.write("!\"\5\n\6\2\"#\5\22\n\2#%\3\2\2\2$!\3\2\2\2%&\3\2\2\2")
-        buf.write("&$\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2()\5\n\6\2)\t\3\2\2\2")
-        buf.write("*.\7\7\2\2+.\5\16\b\2,.\5\20\t\2-*\3\2\2\2-+\3\2\2\2-")
-        buf.write(",\3\2\2\2.\13\3\2\2\2/\60\7\7\2\2\60\r\3\2\2\2\61\62\7")
-        buf.write("\5\2\2\62\63\7\7\2\2\63\17\3\2\2\2\64\65\7\6\2\2\65\66")
-        buf.write("\7\7\2\2\66\21\3\2\2\2\678\7\3\2\28\23\3\2\2\2\6\27\37")
-        buf.write("&-")
+        buf.write("\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\"\n\3\3\4\3\4\3\5\3\5\3")
+        buf.write("\5\6\5)\n\5\r\5\16\5*\3\5\3\5\3\6\3\6\3\6\5\6\62\n\6\3")
+        buf.write("\7\3\7\3\b\3\b\3\b\3\t\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4")
+        buf.write("\6\b\n\f\16\20\22\2\2\29\2\25\3\2\2\2\4!\3\2\2\2\6#\3")
+        buf.write("\2\2\2\b(\3\2\2\2\n\61\3\2\2\2\f\63\3\2\2\2\16\65\3\2")
+        buf.write("\2\2\208\3\2\2\2\22;\3\2\2\2\24\26\5\4\3\2\25\24\3\2\2")
+        buf.write("\2\26\27\3\2\2\2\27\25\3\2\2\2\27\30\3\2\2\2\30\3\3\2")
+        buf.write("\2\2\31\32\5\n\6\2\32\33\7\4\2\2\33\34\7\b\2\2\34\"\3")
+        buf.write("\2\2\2\35\36\5\n\6\2\36\37\7\4\2\2\37 \5\6\4\2 \"\3\2")
+        buf.write("\2\2!\31\3\2\2\2!\35\3\2\2\2\"\5\3\2\2\2#$\5\b\5\2$\7")
+        buf.write("\3\2\2\2%&\5\n\6\2&\'\5\22\n\2\')\3\2\2\2(%\3\2\2\2)*")
+        buf.write("\3\2\2\2*(\3\2\2\2*+\3\2\2\2+,\3\2\2\2,-\5\n\6\2-\t\3")
+        buf.write("\2\2\2.\62\7\b\2\2/\62\5\16\b\2\60\62\5\20\t\2\61.\3\2")
+        buf.write("\2\2\61/\3\2\2\2\61\60\3\2\2\2\62\13\3\2\2\2\63\64\7\b")
+        buf.write("\2\2\64\r\3\2\2\2\65\66\7\5\2\2\66\67\7\b\2\2\67\17\3")
+        buf.write("\2\2\289\7\6\2\29:\7\b\2\2:\21\3\2\2\2;<\7\3\2\2<\23\3")
+        buf.write("\2\2\2\6\27!*\61")
         return buf.getvalue()
 
 
@@ -43,10 +44,10 @@ class dctParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'/'", "':'", "'_'", "'#'" ]
+    literalNames = [ "<INVALID>", "'/'", "':'", "'_'", "'#'", "'<='" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "COLON", "UNDERSCORE", "HASH", 
-                      "STRING", "WS" ]
+                      "SIGNEDBY", "STRING", "WS" ]
 
     RULE_schema = 0
     RULE_definition = 1
@@ -66,8 +67,9 @@ class dctParser ( Parser ):
     COLON=2
     UNDERSCORE=3
     HASH=4
-    STRING=5
-    WS=6
+    SIGNEDBY=5
+    STRING=6
+    WS=7
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -154,6 +156,9 @@ class dctParser ( Parser ):
         def COLON(self):
             return self.getToken(dctParser.COLON, 0)
 
+        def STRING(self):
+            return self.getToken(dctParser.STRING, 0)
+
         def expression(self):
             return self.getTypedRuleContext(dctParser.ExpressionContext,0)
 
@@ -183,13 +188,30 @@ class dctParser ( Parser ):
         localctx = dctParser.DefinitionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_definition)
         try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 23
-            self.identifier()
-            self.state = 24
-            self.match(dctParser.COLON)
-            self.state = 25
-            self.expression()
+            self.state = 31
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 23
+                self.identifier()
+                self.state = 24
+                self.match(dctParser.COLON)
+                self.state = 25
+                self.match(dctParser.STRING)
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 27
+                self.identifier()
+                self.state = 28
+                self.match(dctParser.COLON)
+                self.state = 29
+                self.expression()
+                pass
+
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -209,9 +231,6 @@ class dctParser ( Parser ):
         def name(self):
             return self.getTypedRuleContext(dctParser.NameContext,0)
 
-
-        def STRING(self):
-            return self.getToken(dctParser.STRING, 0)
 
         def getRuleIndex(self):
             return dctParser.RULE_expression
@@ -238,22 +257,9 @@ class dctParser ( Parser ):
         localctx = dctParser.ExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_expression)
         try:
-            self.state = 29
-            self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
-            if la_ == 1:
-                self.enterOuterAlt(localctx, 1)
-                self.state = 27
-                self.name()
-                pass
-
-            elif la_ == 2:
-                self.enterOuterAlt(localctx, 2)
-                self.state = 28
-                self.match(dctParser.STRING)
-                pass
-
-
+            self.enterOuterAlt(localctx, 1)
+            self.state = 33
+            self.name()
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -310,23 +316,23 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 6, self.RULE_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 34 
+            self.state = 38 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
-                    self.state = 31
+                    self.state = 35
                     self.identifier()
-                    self.state = 32
+                    self.state = 36
                     self.slash()
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 36 
+                self.state = 40 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
 
-            self.state = 38
+            self.state = 42
             self.identifier()
         except RecognitionException as re:
             localctx.exception = re
@@ -380,22 +386,22 @@ class dctParser ( Parser ):
         localctx = dctParser.IdentifierContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_identifier)
         try:
-            self.state = 43
+            self.state = 47
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [dctParser.STRING]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 40
+                self.state = 44
                 self.match(dctParser.STRING)
                 pass
             elif token in [dctParser.UNDERSCORE]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 41
+                self.state = 45
                 self.ustring()
                 pass
             elif token in [dctParser.HASH]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 42
+                self.state = 46
                 self.hstring()
                 pass
             else:
@@ -446,7 +452,7 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_signing_chain)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 45
+            self.state = 49
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -496,10 +502,10 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 12, self.RULE_ustring)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 47
+            self.state = 51
             self.match(dctParser.UNDERSCORE)
 
-            self.state = 48
+            self.state = 52
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -549,10 +555,10 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_hstring)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 50
+            self.state = 54
             self.match(dctParser.HASH)
 
-            self.state = 51
+            self.state = 55
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -597,7 +603,7 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_slash)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 53
+            self.state = 57
             self.match(dctParser.T__0)
         except RecognitionException as re:
             localctx.exception = re

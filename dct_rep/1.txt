@@ -1,1 +1,3 @@
 _network: Alice
+_domain: dnmp
+_keyinfo: KEY

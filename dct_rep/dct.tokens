@@ -2,9 +2,11 @@ T__0=1
 COLON=2
 UNDERSCORE=3
 HASH=4
-STRING=5
-WS=6
+SIGNEDBY=5
+STRING=6
+WS=7
 '/'=1
 ':'=2
 '_'=3
 '#'=4
+'<='=5

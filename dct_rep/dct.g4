@@ -2,9 +2,10 @@ grammar dct;
 
 schema : (definition)+;
 
-definition: identifier COLON expression;
+definition: identifier COLON STRING
+		| identifier COLON expression;
 
-expression: name | STRING;
+expression: name;
 
 name: (identifier slash)+ identifier;
 
@@ -48,6 +49,8 @@ hstring: (HASH)(STRING);
 UNDERSCORE: '_';
 
 HASH: '#';
+
+SIGNEDBY: '<=';
 
 slash: '/';
 
