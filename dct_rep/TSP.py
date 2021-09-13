@@ -4,9 +4,11 @@ from dctListener import dctListener
 from dctParser import dctParser
 from dctVisitor import dctVisitor
 import sys
+from collections import defaultdict
 
 idDict = {}
-defDict = {}
+defDict = defaultdict(list)
+#defDict = {}
 
 class Schema:
     pass
@@ -15,6 +17,7 @@ class Identifier:
     def __init__(self):
         self.type = None
         self.value = None
+        self.signedby = None
 
 class CustomVisitor(dctVisitor):
     def __init__(self):
@@ -30,8 +33,10 @@ class CustomVisitor(dctVisitor):
         self.definitions.append(schema)
     
     def visitDefinition(self, ctx:dctParser.DefinitionContext):
-        id = ctx.identifier().accept(self)
+        #id = ctx.identifier().accept(self)
         #print(ctx.STRING())
+        id = ctx.getChild(0).accept(self)
+        #print(ctx.getChild(3))
         
         if(id.type == 'uString'):
             idDict[id.value] = ctx.STRING().getText()
@@ -39,7 +44,14 @@ class CustomVisitor(dctVisitor):
         
         elif(id.type == 'string'):
             exp = ctx.expression().accept(self)
-            defDict[id.value] = exp
+            defDict[id].append(exp)
+            
+            if(ctx.SIGNEDBY()):
+                #c = []
+                cert = ctx.getChild(4).accept(self)
+                defDict[id].append(cert)
+            
+            #translate(defDict)
         
         #exp = ctx.expression().accept(self)
         #print(exp)
@@ -77,7 +89,23 @@ class CustomVisitor(dctVisitor):
         for c in ctx.identifier():
             ids.append(c.accept(self))
         return ids
-            
+
+def translate(dict):
+    print(len(dict.keys()))
+    for key,values in dict.items():
+        res = ''
+        res = res + key.value + ' : '
+        for v in values[0]:
+            if(v.type == 'uString'):
+                if v.value in idDict:
+                    res += idDict[v.value] + '/'
+                else:
+                    res += v.value + '/'
+            else:
+                res += v.value + '/'
+        res += '\t{ '+ values[1].value + ' }'
+        print(res)
+    
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
     lexer = dctLexer(schema_src_code)
@@ -92,19 +120,11 @@ if err == 0:
     try:
         tree.accept(visitor)
         print(idDict)
-        #print(defDict)
 
     except Exception as e:
         print("\nSyntax error occurred in the policy file!\n")
         sys.exit(1)
-    
-    for key,values in defDict.items():
-        res = ''
-        res = res + key + ' : '
-        for v in values:
-            if(v.type == 'uString'):
-                res += idDict[v.value] + '/'
-            else:
-                res += v.value
-    print(res)
+
+    translate(defDict)
+
         

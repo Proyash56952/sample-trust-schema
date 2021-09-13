@@ -3,7 +3,7 @@ grammar dct;
 schema : (definition)+;
 
 definition: identifier COLON STRING
-		| identifier COLON expression;
+		| identifier COLON expression SIGNEDBY identifier;
 
 expression: name;
 

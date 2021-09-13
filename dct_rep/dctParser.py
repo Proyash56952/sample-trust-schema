@@ -12,25 +12,25 @@ else:
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\t")
-        buf.write(">\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("@\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
         buf.write("\t\b\4\t\t\t\4\n\t\n\3\2\6\2\26\n\2\r\2\16\2\27\3\3\3")
-        buf.write("\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\"\n\3\3\4\3\4\3\5\3\5\3")
-        buf.write("\5\6\5)\n\5\r\5\16\5*\3\5\3\5\3\6\3\6\3\6\5\6\62\n\6\3")
-        buf.write("\7\3\7\3\b\3\b\3\b\3\t\3\t\3\t\3\n\3\n\3\n\2\2\13\2\4")
-        buf.write("\6\b\n\f\16\20\22\2\2\29\2\25\3\2\2\2\4!\3\2\2\2\6#\3")
-        buf.write("\2\2\2\b(\3\2\2\2\n\61\3\2\2\2\f\63\3\2\2\2\16\65\3\2")
-        buf.write("\2\2\208\3\2\2\2\22;\3\2\2\2\24\26\5\4\3\2\25\24\3\2\2")
-        buf.write("\2\26\27\3\2\2\2\27\25\3\2\2\2\27\30\3\2\2\2\30\3\3\2")
-        buf.write("\2\2\31\32\5\n\6\2\32\33\7\4\2\2\33\34\7\b\2\2\34\"\3")
-        buf.write("\2\2\2\35\36\5\n\6\2\36\37\7\4\2\2\37 \5\6\4\2 \"\3\2")
-        buf.write("\2\2!\31\3\2\2\2!\35\3\2\2\2\"\5\3\2\2\2#$\5\b\5\2$\7")
-        buf.write("\3\2\2\2%&\5\n\6\2&\'\5\22\n\2\')\3\2\2\2(%\3\2\2\2)*")
-        buf.write("\3\2\2\2*(\3\2\2\2*+\3\2\2\2+,\3\2\2\2,-\5\n\6\2-\t\3")
-        buf.write("\2\2\2.\62\7\b\2\2/\62\5\16\b\2\60\62\5\20\t\2\61.\3\2")
-        buf.write("\2\2\61/\3\2\2\2\61\60\3\2\2\2\62\13\3\2\2\2\63\64\7\b")
-        buf.write("\2\2\64\r\3\2\2\2\65\66\7\5\2\2\66\67\7\b\2\2\67\17\3")
-        buf.write("\2\2\289\7\6\2\29:\7\b\2\2:\21\3\2\2\2;<\7\3\2\2<\23\3")
-        buf.write("\2\2\2\6\27!*\61")
+        buf.write("\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3$\n\3\3\4\3\4\3")
+        buf.write("\5\3\5\3\5\6\5+\n\5\r\5\16\5,\3\5\3\5\3\6\3\6\3\6\5\6")
+        buf.write("\64\n\6\3\7\3\7\3\b\3\b\3\b\3\t\3\t\3\t\3\n\3\n\3\n\2")
+        buf.write("\2\13\2\4\6\b\n\f\16\20\22\2\2\2;\2\25\3\2\2\2\4#\3\2")
+        buf.write("\2\2\6%\3\2\2\2\b*\3\2\2\2\n\63\3\2\2\2\f\65\3\2\2\2\16")
+        buf.write("\67\3\2\2\2\20:\3\2\2\2\22=\3\2\2\2\24\26\5\4\3\2\25\24")
+        buf.write("\3\2\2\2\26\27\3\2\2\2\27\25\3\2\2\2\27\30\3\2\2\2\30")
+        buf.write("\3\3\2\2\2\31\32\5\n\6\2\32\33\7\4\2\2\33\34\7\b\2\2\34")
+        buf.write("$\3\2\2\2\35\36\5\n\6\2\36\37\7\4\2\2\37 \5\6\4\2 !\7")
+        buf.write("\7\2\2!\"\5\n\6\2\"$\3\2\2\2#\31\3\2\2\2#\35\3\2\2\2$")
+        buf.write("\5\3\2\2\2%&\5\b\5\2&\7\3\2\2\2\'(\5\n\6\2()\5\22\n\2")
+        buf.write(")+\3\2\2\2*\'\3\2\2\2+,\3\2\2\2,*\3\2\2\2,-\3\2\2\2-.")
+        buf.write("\3\2\2\2./\5\n\6\2/\t\3\2\2\2\60\64\7\b\2\2\61\64\5\16")
+        buf.write("\b\2\62\64\5\20\t\2\63\60\3\2\2\2\63\61\3\2\2\2\63\62")
+        buf.write("\3\2\2\2\64\13\3\2\2\2\65\66\7\b\2\2\66\r\3\2\2\2\678")
+        buf.write("\7\5\2\289\7\b\2\29\17\3\2\2\2:;\7\6\2\2;<\7\b\2\2<\21")
+        buf.write("\3\2\2\2=>\7\3\2\2>\23\3\2\2\2\6\27#,\63")
         return buf.getvalue()
 
 
@@ -149,8 +149,11 @@ class dctParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def identifier(self):
-            return self.getTypedRuleContext(dctParser.IdentifierContext,0)
+        def identifier(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(dctParser.IdentifierContext)
+            else:
+                return self.getTypedRuleContext(dctParser.IdentifierContext,i)
 
 
         def COLON(self):
@@ -162,6 +165,9 @@ class dctParser ( Parser ):
         def expression(self):
             return self.getTypedRuleContext(dctParser.ExpressionContext,0)
 
+
+        def SIGNEDBY(self):
+            return self.getToken(dctParser.SIGNEDBY, 0)
 
         def getRuleIndex(self):
             return dctParser.RULE_definition
@@ -188,7 +194,7 @@ class dctParser ( Parser ):
         localctx = dctParser.DefinitionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_definition)
         try:
-            self.state = 31
+            self.state = 33
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
             if la_ == 1:
@@ -209,6 +215,10 @@ class dctParser ( Parser ):
                 self.match(dctParser.COLON)
                 self.state = 29
                 self.expression()
+                self.state = 30
+                self.match(dctParser.SIGNEDBY)
+                self.state = 31
+                self.identifier()
                 pass
 
 
@@ -258,7 +268,7 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 4, self.RULE_expression)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 33
+            self.state = 35
             self.name()
         except RecognitionException as re:
             localctx.exception = re
@@ -316,23 +326,23 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 6, self.RULE_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 38 
+            self.state = 40 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
-                    self.state = 35
+                    self.state = 37
                     self.identifier()
-                    self.state = 36
+                    self.state = 38
                     self.slash()
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 40 
+                self.state = 42 
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
 
-            self.state = 42
+            self.state = 44
             self.identifier()
         except RecognitionException as re:
             localctx.exception = re
@@ -386,22 +396,22 @@ class dctParser ( Parser ):
         localctx = dctParser.IdentifierContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_identifier)
         try:
-            self.state = 47
+            self.state = 49
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [dctParser.STRING]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 44
+                self.state = 46
                 self.match(dctParser.STRING)
                 pass
             elif token in [dctParser.UNDERSCORE]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 45
+                self.state = 47
                 self.ustring()
                 pass
             elif token in [dctParser.HASH]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 46
+                self.state = 48
                 self.hstring()
                 pass
             else:
@@ -452,7 +462,7 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_signing_chain)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 49
+            self.state = 51
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -502,10 +512,10 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 12, self.RULE_ustring)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 51
+            self.state = 53
             self.match(dctParser.UNDERSCORE)
 
-            self.state = 52
+            self.state = 54
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -555,10 +565,10 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_hstring)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 54
+            self.state = 56
             self.match(dctParser.HASH)
 
-            self.state = 55
+            self.state = 57
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -603,7 +613,7 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_slash)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 57
+            self.state = 59
             self.match(dctParser.T__0)
         except RecognitionException as re:
             localctx.exception = re

@@ -4,4 +4,8 @@ _domain: dnmp
 
 _keyinfo: KEY
 
-dnmpCert: _network/_domain/_keyinfo
+dnmpCert: _network/_domain/_keyinfo <= netCert
+
+nodCert:    _network/_domain/nod/_nodId/_keyinfo <= deviceCert
+deviceCert: _network/device/devId/_keyinfo <= configCert
+configCert: _network/config/confId/_keyinfo <= netCert
