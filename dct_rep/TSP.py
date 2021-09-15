@@ -41,7 +41,8 @@ class CustomVisitor(dctVisitor):
         id = ctx.getChild(0).accept(self)
         
         if(id.type == 'uString'):
-            idDict[id.value] = ctx.STRING().getText()
+            #print(type(ctx.literal().accept(self)))
+            idDict[id.value] = '"' + ctx.literal().accept(self) + '"'
             #print(idDict)
         
         elif(id.type == 'hString'):
@@ -55,6 +56,7 @@ class CustomVisitor(dctVisitor):
                 for m in constraints:
                     for e in exp.value:
                         if(e.value in m):
+                            #print(e.value)
                             e.value = m[e.value]
                         
                 defDict[id.value].append(exp.value)
@@ -139,14 +141,14 @@ class CustomVisitor(dctVisitor):
         d = {}
         for c in ctx.constraint_body():
             i, s = c.accept(self)
-            d[i.value] = s.getText()
+            d[i.value] = s
         return d
         
             
         
     def visitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
         id = ctx.identifier().accept(self)
-        s = ctx.STRING()
+        s = '"'+ ctx.literal().accept(self) + '"'
         return id, s
         
     
@@ -155,6 +157,10 @@ class CustomVisitor(dctVisitor):
         
     def visitHstring(self, ctx:dctParser.HstringContext):
         return ctx.HASH().getText() + ctx.STRING().getText()
+        
+    def visitLiteral(self, ctx:dctParser.LiteralContext):
+        #print(ctx.AP().getText())
+        return ctx.STRING().getText()
         
     def visitExpression(self, ctx:dctParser.ExpressionContext):
         e = Expression()

@@ -2,7 +2,7 @@ grammar dct;
 
 schema : (definition)+;
 
-definition: identifier COLON STRING
+definition: identifier COLON literal
 		| identifier COLON expression SIGNEDBY identifier
 		| identifier COLON expression AND constraints
 		| identifier COLON expression AND constraints SIGNEDBY identifier		
@@ -16,13 +16,17 @@ identifier: STRING | ustring | hstring;
 
 signing_chain: STRING;
 
+literal: (AP)(STRING)(AP);
+
 constraints: constraint ( OR constraint)*;
 
 constraint: BO constraint_body (COMA constraint_body)* BC;
 
-constraint_body: identifier COLON STRING;
+constraint_body: identifier COLON literal | identifier COLON STRING;
 
 COLON: ':';
+
+AP: '"';
 
 AND: '&';
 

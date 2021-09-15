@@ -1,8 +1,8 @@
-_network: AliceNetOps
+_network: "AliceNetOps"
 
-_domain: dnmp
+_domain: "dnmp"
 
-_keyinfo: KEY
+_keyinfo: "KEY"
 
 netCert: _network/_keyinfo
 
@@ -13,14 +13,14 @@ deviceCert: _network/device/devId/_keyinfo <= configCert
 configCert: _network/config/confId/_keyinfo <= netCert
 
 roleCert: _network/_domain/_role/_roleId/_keyinfo <= dnmpCert
-opCert:   roleCert & { _role: operator }
-userCert: roleCert & { _role: user }
+opCert:   roleCert & { _role: "operator" }
+userCert: roleCert & { _role: "user" }
 
 #command: _network/_domain/target/_topic/_roleId/pType/pArgs/_origin/_cTS &
-                { _topic: command, _origin: sysId, _cTS: timestamp } <= opCert
+                { _topic: "command", _origin: "sysId", _cTS: "timestamp" } <= opCert
 ocommand: #command <= opCert
-ucommand: #command & { target: local } | { pType: Pinger } <= userCert
+ucommand: #command & { target: "local"} | { pType: "Pinger" } <= userCert
 
 #wirePrefix: _ndnprefix/_domain/target
-wpLocal: #wirePrefix & { _ndnprefix: localhost, target: local }
-wpOther: #wirePrefix & { _ndnprefix: localnet }
+wpLocal: #wirePrefix & { _ndnprefix: "localhost", target: "local" }
+wpOther: #wirePrefix & { _ndnprefix: "localnet" }

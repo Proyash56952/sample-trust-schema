@@ -62,6 +62,15 @@ class dctListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by dctParser#literal.
+    def enterLiteral(self, ctx:dctParser.LiteralContext):
+        pass
+
+    # Exit a parse tree produced by dctParser#literal.
+    def exitLiteral(self, ctx:dctParser.LiteralContext):
+        pass
+
+
     # Enter a parse tree produced by dctParser#constraints.
     def enterConstraints(self, ctx:dctParser.ConstraintsContext):
         pass
