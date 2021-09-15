@@ -3,9 +3,10 @@ grammar dct;
 schema : (definition)+;
 
 definition: identifier COLON STRING
-		| identifier COLON expression SIGNEDBY identifier;
+		| identifier COLON expression SIGNEDBY identifier
+		| identifier COLON expression AND constraints;
 
-expression: name;
+expression: name | identifier;
 
 name: (identifier slash)+ identifier;
 
@@ -13,7 +14,23 @@ identifier: STRING | ustring | hstring;
 
 signing_chain: STRING;
 
+constraints: constraint ( OR constraint)*;
+
+constraint: BO constraint_body (COMA constraint_body)* BC;
+
+constraint_body: identifier COLON STRING;
+
 COLON: ':';
+
+AND: '&';
+
+BO: '{';
+
+BC: '}';
+
+OR: '|';
+
+COMA: ',';
 
 fragment A:('a'|'A');
 fragment B:('b'|'B');

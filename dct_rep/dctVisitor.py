@@ -39,6 +39,21 @@ class dctVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by dctParser#constraints.
+    def visitConstraints(self, ctx:dctParser.ConstraintsContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by dctParser#constraint.
+    def visitConstraint(self, ctx:dctParser.ConstraintContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by dctParser#constraint_body.
+    def visitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by dctParser#ustring.
     def visitUstring(self, ctx:dctParser.UstringContext):
         return self.visitChildren(ctx)

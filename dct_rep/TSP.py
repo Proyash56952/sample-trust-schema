@@ -18,6 +18,11 @@ class Identifier:
         self.type = None
         self.value = None
         self.signedby = None
+        
+class Expression:
+    def __init__(self):
+        self.type = None
+        self.value = None
 
 class CustomVisitor(dctVisitor):
     def __init__(self):
@@ -33,46 +38,71 @@ class CustomVisitor(dctVisitor):
         self.definitions.append(schema)
     
     def visitDefinition(self, ctx:dctParser.DefinitionContext):
-        #id = ctx.identifier().accept(self)
-        #print(ctx.STRING())
         id = ctx.getChild(0).accept(self)
-        #print(ctx.getChild(3))
         
         if(id.type == 'uString'):
             idDict[id.value] = ctx.STRING().getText()
-            #print(Dict)
+            #print(idDict)
         
         elif(id.type == 'string'):
-            exp = ctx.expression().accept(self)
-            defDict[id].append(exp)
+            if not ctx.constraints():
+                defDict[id.value].append('type1')
+                exp = ctx.expression().accept(self)
+                defDict[id.value].append(exp.value)
             
-            if(ctx.SIGNEDBY()):
-                #c = []
-                cert = ctx.getChild(4).accept(self)
-                defDict[id].append(cert)
+                if(ctx.SIGNEDBY()):
+                    cert = ctx.getChild(4).accept(self)
+                    defDict[id.value].append(cert)
+            
+            else:
+                defDict[id.value].append('type2')
+                exp = ctx.expression().accept(self)
+                if (exp.type == 'id'):
+                    #print(exp.value.value)
+                    defDict[id.value].append(exp.value)
+                
+                constraints = ctx.constraints().accept(self)
+                defDict[id.value].append(constraints)
+                #defDict[id].append('constraint')
+                    
             
             #translate(defDict)
-        
-        #exp = ctx.expression().accept(self)
-        #print(exp)
             
     def visitIdentifier(self, ctx:dctParser.IdentifierContext):
         id = Identifier()
         if(ctx.STRING()):
-            #print("hi")
             id.type = 'string'
             id.value = ctx.STRING().getText()
             
             
         if(ctx.ustring()):
-            #print("hola")
             id.type = 'uString'
             id.value = ctx.ustring().accept(self)
-            #print(id.value)
             
         return id
             
+    def visitConstraints(self, ctx:dctParser.ConstraintsContext):
+        cl = []
+        for c in ctx.constraint():
+            cl.append(c.accept(self))
+        return cl
+            
+    
+    def visitConstraint(self, ctx:dctParser.ConstraintContext):
+        d = {}
+        for c in ctx.constraint_body():
+            i, s = c.accept(self)
+            d[i.value] = s.getText()
+        return d
         
+            
+        
+    def visitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
+        id = ctx.identifier().accept(self)
+        s = ctx.STRING()
+        return id, s
+        
+    
     def visitUstring(self, ctx:dctParser.UstringContext):
         return ctx.UNDERSCORE().getText() + ctx.STRING().getText()
         
@@ -80,9 +110,14 @@ class CustomVisitor(dctVisitor):
         return ctx.HASH().getText() + ctx.STRING().getText()
         
     def visitExpression(self, ctx:dctParser.ExpressionContext):
+        e = Expression()
         if (ctx.name()):
-            c = ctx.name().accept(self)
-        return c
+            e.value = ctx.name().accept(self)
+            e.type = 'name'
+        elif (ctx.identifier()):
+            e.value = ctx.identifier().accept(self)
+            e.type = 'id'
+        return e
     
     def visitName(self, ctx:dctParser.NameContext):
         ids = []
@@ -91,21 +126,47 @@ class CustomVisitor(dctVisitor):
         return ids
 
 def translate(dict):
-    print(len(dict.keys()))
+    #print(len(dict.keys()))
+
     for key,values in dict.items():
-        res = ''
-        res = res + key.value + ' : '
-        for v in values[0]:
-            if(v.type == 'uString'):
-                if v.value in idDict:
-                    res += idDict[v.value] + '/'
+        if values[0] == 'type1':
+            res = ''
+            res = res + key + ' : '
+            for v in values[1]:
+                if(v.type == 'uString'):
+                    if v.value in idDict:
+                        res += idDict[v.value] + '/'
+                    else:
+                        res += v.value + '/'
                 else:
                     res += v.value + '/'
-            else:
-                res += v.value + '/'
-        res += '\t{ '+ values[1].value + ' }'
-        print(res)
-    
+            res += ' { '+ values[2].value + ' }'
+            print(res)
+
+        elif values[0] == 'type2':
+            previd = dict.get(values[1].value)
+            if(previd != None):
+                constraints = values[2]
+                for m in constraints:
+                    res = ''
+                    res = res + key + ' : '
+                    for v in previd[1]:
+                        if(v.type == 'uString'):
+                            if v.value in m:
+                                res += m[v.value] + '/'
+                            elif v.value in idDict:
+                                res += idDict[v.value] + '/'
+                            
+                            else:
+                                res += v.value + '/'
+                        else:
+                            res += v.value + '/'
+
+                    res += ' { '+ previd[2].value + ' }'
+                    print(res)
+                
+            
+            
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
     lexer = dctLexer(schema_src_code)

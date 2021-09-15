@@ -1,0 +1,7 @@
+_network: AliceNetOps
+_domain: dnmp
+roleCert: _network/_domain/_role/_roleId/_keyinfo <= dnmpCert
+opCert:   roleCert & { _role: operator }
+userCert: roleCert & { _role: user }
+
+

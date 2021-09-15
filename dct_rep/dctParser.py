@@ -11,26 +11,37 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\t")
-        buf.write("@\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
-        buf.write("\t\b\4\t\t\t\4\n\t\n\3\2\6\2\26\n\2\r\2\16\2\27\3\3\3")
-        buf.write("\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3$\n\3\3\4\3\4\3")
-        buf.write("\5\3\5\3\5\6\5+\n\5\r\5\16\5,\3\5\3\5\3\6\3\6\3\6\5\6")
-        buf.write("\64\n\6\3\7\3\7\3\b\3\b\3\b\3\t\3\t\3\t\3\n\3\n\3\n\2")
-        buf.write("\2\13\2\4\6\b\n\f\16\20\22\2\2\2;\2\25\3\2\2\2\4#\3\2")
-        buf.write("\2\2\6%\3\2\2\2\b*\3\2\2\2\n\63\3\2\2\2\f\65\3\2\2\2\16")
-        buf.write("\67\3\2\2\2\20:\3\2\2\2\22=\3\2\2\2\24\26\5\4\3\2\25\24")
-        buf.write("\3\2\2\2\26\27\3\2\2\2\27\25\3\2\2\2\27\30\3\2\2\2\30")
-        buf.write("\3\3\2\2\2\31\32\5\n\6\2\32\33\7\4\2\2\33\34\7\b\2\2\34")
-        buf.write("$\3\2\2\2\35\36\5\n\6\2\36\37\7\4\2\2\37 \5\6\4\2 !\7")
-        buf.write("\7\2\2!\"\5\n\6\2\"$\3\2\2\2#\31\3\2\2\2#\35\3\2\2\2$")
-        buf.write("\5\3\2\2\2%&\5\b\5\2&\7\3\2\2\2\'(\5\n\6\2()\5\22\n\2")
-        buf.write(")+\3\2\2\2*\'\3\2\2\2+,\3\2\2\2,*\3\2\2\2,-\3\2\2\2-.")
-        buf.write("\3\2\2\2./\5\n\6\2/\t\3\2\2\2\60\64\7\b\2\2\61\64\5\16")
-        buf.write("\b\2\62\64\5\20\t\2\63\60\3\2\2\2\63\61\3\2\2\2\63\62")
-        buf.write("\3\2\2\2\64\13\3\2\2\2\65\66\7\b\2\2\66\r\3\2\2\2\678")
-        buf.write("\7\5\2\289\7\b\2\29\17\3\2\2\2:;\7\6\2\2;<\7\b\2\2<\21")
-        buf.write("\3\2\2\2=>\7\3\2\2>\23\3\2\2\2\6\27#,\63")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16")
+        buf.write("e\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\3\2\6\2")
+        buf.write("\34\n\2\r\2\16\2\35\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3")
+        buf.write("\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\60\n\3\3\4\3\4\5\4")
+        buf.write("\64\n\4\3\5\3\5\3\5\6\59\n\5\r\5\16\5:\3\5\3\5\3\6\3\6")
+        buf.write("\3\6\5\6B\n\6\3\7\3\7\3\b\3\b\3\b\7\bI\n\b\f\b\16\bL\13")
+        buf.write("\b\3\t\3\t\3\t\3\t\7\tR\n\t\f\t\16\tU\13\t\3\t\3\t\3\n")
+        buf.write("\3\n\3\n\3\n\3\13\3\13\3\13\3\f\3\f\3\f\3\r\3\r\3\r\2")
+        buf.write("\2\16\2\4\6\b\n\f\16\20\22\24\26\30\2\2\2a\2\33\3\2\2")
+        buf.write("\2\4/\3\2\2\2\6\63\3\2\2\2\b8\3\2\2\2\nA\3\2\2\2\fC\3")
+        buf.write("\2\2\2\16E\3\2\2\2\20M\3\2\2\2\22X\3\2\2\2\24\\\3\2\2")
+        buf.write("\2\26_\3\2\2\2\30b\3\2\2\2\32\34\5\4\3\2\33\32\3\2\2\2")
+        buf.write("\34\35\3\2\2\2\35\33\3\2\2\2\35\36\3\2\2\2\36\3\3\2\2")
+        buf.write("\2\37 \5\n\6\2 !\7\4\2\2!\"\7\r\2\2\"\60\3\2\2\2#$\5\n")
+        buf.write("\6\2$%\7\4\2\2%&\5\6\4\2&\'\7\f\2\2\'(\5\n\6\2(\60\3\2")
+        buf.write("\2\2)*\5\n\6\2*+\7\4\2\2+,\5\6\4\2,-\7\5\2\2-.\5\16\b")
+        buf.write("\2.\60\3\2\2\2/\37\3\2\2\2/#\3\2\2\2/)\3\2\2\2\60\5\3")
+        buf.write("\2\2\2\61\64\5\b\5\2\62\64\5\n\6\2\63\61\3\2\2\2\63\62")
+        buf.write("\3\2\2\2\64\7\3\2\2\2\65\66\5\n\6\2\66\67\5\30\r\2\67")
+        buf.write("9\3\2\2\28\65\3\2\2\29:\3\2\2\2:8\3\2\2\2:;\3\2\2\2;<")
+        buf.write("\3\2\2\2<=\5\n\6\2=\t\3\2\2\2>B\7\r\2\2?B\5\24\13\2@B")
+        buf.write("\5\26\f\2A>\3\2\2\2A?\3\2\2\2A@\3\2\2\2B\13\3\2\2\2CD")
+        buf.write("\7\r\2\2D\r\3\2\2\2EJ\5\20\t\2FG\7\b\2\2GI\5\20\t\2HF")
+        buf.write("\3\2\2\2IL\3\2\2\2JH\3\2\2\2JK\3\2\2\2K\17\3\2\2\2LJ\3")
+        buf.write("\2\2\2MN\7\6\2\2NS\5\22\n\2OP\7\t\2\2PR\5\22\n\2QO\3\2")
+        buf.write("\2\2RU\3\2\2\2SQ\3\2\2\2ST\3\2\2\2TV\3\2\2\2US\3\2\2\2")
+        buf.write("VW\7\7\2\2W\21\3\2\2\2XY\5\n\6\2YZ\7\4\2\2Z[\7\r\2\2[")
+        buf.write("\23\3\2\2\2\\]\7\n\2\2]^\7\r\2\2^\25\3\2\2\2_`\7\13\2")
+        buf.write("\2`a\7\r\2\2a\27\3\2\2\2bc\7\3\2\2c\31\3\2\2\2\t\35/\63")
+        buf.write(":AJS")
         return buf.getvalue()
 
 
@@ -44,10 +55,12 @@ class dctParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'/'", "':'", "'_'", "'#'", "'<='" ]
+    literalNames = [ "<INVALID>", "'/'", "':'", "'&'", "'{'", "'}'", "'|'", 
+                     "','", "'_'", "'#'", "'<='" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "COLON", "UNDERSCORE", "HASH", 
-                      "SIGNEDBY", "STRING", "WS" ]
+    symbolicNames = [ "<INVALID>", "<INVALID>", "COLON", "AND", "BO", "BC", 
+                      "OR", "COMA", "UNDERSCORE", "HASH", "SIGNEDBY", "STRING", 
+                      "WS" ]
 
     RULE_schema = 0
     RULE_definition = 1
@@ -55,21 +68,30 @@ class dctParser ( Parser ):
     RULE_name = 3
     RULE_identifier = 4
     RULE_signing_chain = 5
-    RULE_ustring = 6
-    RULE_hstring = 7
-    RULE_slash = 8
+    RULE_constraints = 6
+    RULE_constraint = 7
+    RULE_constraint_body = 8
+    RULE_ustring = 9
+    RULE_hstring = 10
+    RULE_slash = 11
 
     ruleNames =  [ "schema", "definition", "expression", "name", "identifier", 
-                   "signing_chain", "ustring", "hstring", "slash" ]
+                   "signing_chain", "constraints", "constraint", "constraint_body", 
+                   "ustring", "hstring", "slash" ]
 
     EOF = Token.EOF
     T__0=1
     COLON=2
-    UNDERSCORE=3
-    HASH=4
-    SIGNEDBY=5
-    STRING=6
-    WS=7
+    AND=3
+    BO=4
+    BC=5
+    OR=6
+    COMA=7
+    UNDERSCORE=8
+    HASH=9
+    SIGNEDBY=10
+    STRING=11
+    WS=12
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -121,13 +143,13 @@ class dctParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 19 
+            self.state = 25 
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while True:
-                self.state = 18
+                self.state = 24
                 self.definition()
-                self.state = 21 
+                self.state = 27 
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if not ((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << dctParser.UNDERSCORE) | (1 << dctParser.HASH) | (1 << dctParser.STRING))) != 0)):
@@ -169,6 +191,13 @@ class dctParser ( Parser ):
         def SIGNEDBY(self):
             return self.getToken(dctParser.SIGNEDBY, 0)
 
+        def AND(self):
+            return self.getToken(dctParser.AND, 0)
+
+        def constraints(self):
+            return self.getTypedRuleContext(dctParser.ConstraintsContext,0)
+
+
         def getRuleIndex(self):
             return dctParser.RULE_definition
 
@@ -194,31 +223,45 @@ class dctParser ( Parser ):
         localctx = dctParser.DefinitionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 2, self.RULE_definition)
         try:
-            self.state = 33
+            self.state = 45
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 23
+                self.state = 29
                 self.identifier()
-                self.state = 24
+                self.state = 30
                 self.match(dctParser.COLON)
-                self.state = 25
+                self.state = 31
                 self.match(dctParser.STRING)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 27
+                self.state = 33
                 self.identifier()
-                self.state = 28
+                self.state = 34
                 self.match(dctParser.COLON)
-                self.state = 29
+                self.state = 35
                 self.expression()
-                self.state = 30
+                self.state = 36
                 self.match(dctParser.SIGNEDBY)
-                self.state = 31
+                self.state = 37
                 self.identifier()
+                pass
+
+            elif la_ == 3:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 39
+                self.identifier()
+                self.state = 40
+                self.match(dctParser.COLON)
+                self.state = 41
+                self.expression()
+                self.state = 42
+                self.match(dctParser.AND)
+                self.state = 43
+                self.constraints()
                 pass
 
 
@@ -240,6 +283,10 @@ class dctParser ( Parser ):
 
         def name(self):
             return self.getTypedRuleContext(dctParser.NameContext,0)
+
+
+        def identifier(self):
+            return self.getTypedRuleContext(dctParser.IdentifierContext,0)
 
 
         def getRuleIndex(self):
@@ -267,9 +314,22 @@ class dctParser ( Parser ):
         localctx = dctParser.ExpressionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_expression)
         try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 35
-            self.name()
+            self.state = 49
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 47
+                self.name()
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 48
+                self.identifier()
+                pass
+
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -326,23 +386,23 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 6, self.RULE_name)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 40 
+            self.state = 54 
             self._errHandler.sync(self)
             _alt = 1
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt == 1:
-                    self.state = 37
+                    self.state = 51
                     self.identifier()
-                    self.state = 38
+                    self.state = 52
                     self.slash()
 
                 else:
                     raise NoViableAltException(self)
-                self.state = 42 
+                self.state = 56 
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,2,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
 
-            self.state = 44
+            self.state = 58
             self.identifier()
         except RecognitionException as re:
             localctx.exception = re
@@ -396,22 +456,22 @@ class dctParser ( Parser ):
         localctx = dctParser.IdentifierContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_identifier)
         try:
-            self.state = 49
+            self.state = 63
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [dctParser.STRING]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 46
+                self.state = 60
                 self.match(dctParser.STRING)
                 pass
             elif token in [dctParser.UNDERSCORE]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 47
+                self.state = 61
                 self.ustring()
                 pass
             elif token in [dctParser.HASH]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 48
+                self.state = 62
                 self.hstring()
                 pass
             else:
@@ -462,7 +522,215 @@ class dctParser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_signing_chain)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 51
+            self.state = 65
+            self.match(dctParser.STRING)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ConstraintsContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def constraint(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(dctParser.ConstraintContext)
+            else:
+                return self.getTypedRuleContext(dctParser.ConstraintContext,i)
+
+
+        def OR(self, i:int=None):
+            if i is None:
+                return self.getTokens(dctParser.OR)
+            else:
+                return self.getToken(dctParser.OR, i)
+
+        def getRuleIndex(self):
+            return dctParser.RULE_constraints
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterConstraints" ):
+                listener.enterConstraints(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitConstraints" ):
+                listener.exitConstraints(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConstraints" ):
+                return visitor.visitConstraints(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def constraints(self):
+
+        localctx = dctParser.ConstraintsContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_constraints)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 67
+            self.constraint()
+            self.state = 72
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==dctParser.OR:
+                self.state = 68
+                self.match(dctParser.OR)
+                self.state = 69
+                self.constraint()
+                self.state = 74
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ConstraintContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def BO(self):
+            return self.getToken(dctParser.BO, 0)
+
+        def constraint_body(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(dctParser.Constraint_bodyContext)
+            else:
+                return self.getTypedRuleContext(dctParser.Constraint_bodyContext,i)
+
+
+        def BC(self):
+            return self.getToken(dctParser.BC, 0)
+
+        def COMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(dctParser.COMA)
+            else:
+                return self.getToken(dctParser.COMA, i)
+
+        def getRuleIndex(self):
+            return dctParser.RULE_constraint
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterConstraint" ):
+                listener.enterConstraint(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitConstraint" ):
+                listener.exitConstraint(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConstraint" ):
+                return visitor.visitConstraint(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def constraint(self):
+
+        localctx = dctParser.ConstraintContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 14, self.RULE_constraint)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 75
+            self.match(dctParser.BO)
+            self.state = 76
+            self.constraint_body()
+            self.state = 81
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==dctParser.COMA:
+                self.state = 77
+                self.match(dctParser.COMA)
+                self.state = 78
+                self.constraint_body()
+                self.state = 83
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+            self.state = 84
+            self.match(dctParser.BC)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class Constraint_bodyContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def identifier(self):
+            return self.getTypedRuleContext(dctParser.IdentifierContext,0)
+
+
+        def COLON(self):
+            return self.getToken(dctParser.COLON, 0)
+
+        def STRING(self):
+            return self.getToken(dctParser.STRING, 0)
+
+        def getRuleIndex(self):
+            return dctParser.RULE_constraint_body
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterConstraint_body" ):
+                listener.enterConstraint_body(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitConstraint_body" ):
+                listener.exitConstraint_body(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConstraint_body" ):
+                return visitor.visitConstraint_body(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def constraint_body(self):
+
+        localctx = dctParser.Constraint_bodyContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 16, self.RULE_constraint_body)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 86
+            self.identifier()
+            self.state = 87
+            self.match(dctParser.COLON)
+            self.state = 88
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -509,13 +777,13 @@ class dctParser ( Parser ):
     def ustring(self):
 
         localctx = dctParser.UstringContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_ustring)
+        self.enterRule(localctx, 18, self.RULE_ustring)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 53
+            self.state = 90
             self.match(dctParser.UNDERSCORE)
 
-            self.state = 54
+            self.state = 91
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -562,13 +830,13 @@ class dctParser ( Parser ):
     def hstring(self):
 
         localctx = dctParser.HstringContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_hstring)
+        self.enterRule(localctx, 20, self.RULE_hstring)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 56
+            self.state = 93
             self.match(dctParser.HASH)
 
-            self.state = 57
+            self.state = 94
             self.match(dctParser.STRING)
         except RecognitionException as re:
             localctx.exception = re
@@ -610,10 +878,10 @@ class dctParser ( Parser ):
     def slash(self):
 
         localctx = dctParser.SlashContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_slash)
+        self.enterRule(localctx, 22, self.RULE_slash)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 59
+            self.state = 96
             self.match(dctParser.T__0)
         except RecognitionException as re:
             localctx.exception = re

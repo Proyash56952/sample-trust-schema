@@ -62,6 +62,33 @@ class dctListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by dctParser#constraints.
+    def enterConstraints(self, ctx:dctParser.ConstraintsContext):
+        pass
+
+    # Exit a parse tree produced by dctParser#constraints.
+    def exitConstraints(self, ctx:dctParser.ConstraintsContext):
+        pass
+
+
+    # Enter a parse tree produced by dctParser#constraint.
+    def enterConstraint(self, ctx:dctParser.ConstraintContext):
+        pass
+
+    # Exit a parse tree produced by dctParser#constraint.
+    def exitConstraint(self, ctx:dctParser.ConstraintContext):
+        pass
+
+
+    # Enter a parse tree produced by dctParser#constraint_body.
+    def enterConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
+        pass
+
+    # Exit a parse tree produced by dctParser#constraint_body.
+    def exitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
+        pass
+
+
     # Enter a parse tree produced by dctParser#ustring.
     def enterUstring(self, ctx:dctParser.UstringContext):
         pass
