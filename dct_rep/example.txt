@@ -20,3 +20,7 @@ userCert: roleCert & { _role: user }
                 { _topic: command, _origin: sysId, _cTS: timestamp } <= opCert
 ocommand: #command <= opCert
 ucommand: #command & { target: local } | { pType: Pinger } <= userCert
+
+#wirePrefix: _ndnprefix/_domain/target
+wpLocal: #wirePrefix & { _ndnprefix: localhost, target: local }
+wpOther: #wirePrefix & { _ndnprefix: localnet }

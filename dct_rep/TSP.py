@@ -46,12 +46,18 @@ class CustomVisitor(dctVisitor):
         
         elif(id.type == 'hString'):
             exp = ctx.expression().accept(self)
-            
+
             if ctx.constraints():
                 defDict[id.value].append('type3')
-                defDict[id.value].append(exp.value)
-                    
+                
                 constraints = ctx.constraints().accept(self)
+                
+                for m in constraints:
+                    for e in exp.value:
+                        if(e.value in m):
+                            e.value = m[e.value]
+                        
+                defDict[id.value].append(exp.value)
                 defDict[id.value].append(constraints)
                 
             else:
@@ -94,24 +100,17 @@ class CustomVisitor(dctVisitor):
                 else:
                     if (exp.type == 'id'):
                         defDict[id.value].append('type4a') # id COLON exp(id) AND constraint <= cert
-                        #print("hola")
                 
                     elif (exp.type == 'name'):
                         defDict[id.value].append('type4b') # id COLON exp(name) AND constraint <= cert
-                        #print("ola")
-                        
+
                     defDict[id.value].append(exp.value)
                     defDict[id.value].append(constraints)
                     
                     cert = ctx.getChild(6).accept(self)
-                    print(cert.value)
+                    #print(cert.value)
                     defDict[id.value].append(cert)
                     
-                    
-                    
-            
-            #translate(defDict)
-            
     def visitIdentifier(self, ctx:dctParser.IdentifierContext):
         id = Identifier()
         if(ctx.STRING()):
@@ -174,8 +173,6 @@ class CustomVisitor(dctVisitor):
         return ids
 
 def translate(dict):
-    #print(len(dict.keys()))
-
     for key,values in dict.items():
         if values[0] in ['type2b', 'type5']:
             res = ''
@@ -194,12 +191,7 @@ def translate(dict):
         
         elif values[0] == 'type2a':
             previd = dict.get(values[1].value)
-            #print(previd)
-            #print("hola")
             constraints = previd[2]
-            #print(previd)
-            #print(constraints)
-            #if(previd != None):
             for m in constraints:
                 res = ''
                 res = res + key + ' : '
@@ -217,10 +209,8 @@ def translate(dict):
 
         elif values[0] in ['type3a', 'type4a']:
             previd = dict.get(values[1].value)
-            #print(previd)
             if(previd != None):
                 constraints = values[2]
-                #print(constraints)
                 for m in constraints:
                     res = ''
                     res = res + key + ' : '
@@ -233,9 +223,7 @@ def translate(dict):
                             
                         else:
                             res += v.value + '/'
-                    if(values[0] == 'type3a'):
-                        #print("hol")
-                        #print(previd[3].value)
+                    if(values[0] == 'type3a' and len(previd) > 2):
                         res += ' { '+ previd[2].value + ' }'
                     elif (values[0] == 'type4a'):
                         res += ' { '+ values[3].value + ' }'
@@ -243,9 +231,6 @@ def translate(dict):
         
         elif values[0] in ['type3b', 'type4b']:
             constraints = values[2]
-            print(constraints)
-            #previd = dict.get(values[1].value)
-            #print(values[1])
             for m in constraints:
                 res = ''
                 res = res + key + ' : '
@@ -261,8 +246,6 @@ def translate(dict):
                     else:
                         res += v.value + '/'
                 if(values[0] == 'type4b'):
-                    print("hol")
-                    print(values[3].value)
                     res += ' { '+ values[3].value + ' }'
                     print(res)
                 
@@ -281,7 +264,7 @@ if err == 0:
     visitor = CustomVisitor()
     try:
         tree.accept(visitor)
-        print(idDict)
+        #print(idDict)
 
     except Exception as e:
         print("\nSyntax error occurred in the policy file!\n")
