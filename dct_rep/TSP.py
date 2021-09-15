@@ -44,26 +44,70 @@ class CustomVisitor(dctVisitor):
             idDict[id.value] = ctx.STRING().getText()
             #print(idDict)
         
-        elif(id.type == 'string'):
-            if not ctx.constraints():
-                defDict[id.value].append('type1')
-                exp = ctx.expression().accept(self)
+        elif(id.type == 'hString'):
+            exp = ctx.expression().accept(self)
+            
+            if ctx.constraints():
+                defDict[id.value].append('type3')
                 defDict[id.value].append(exp.value)
-            
-                if(ctx.SIGNEDBY()):
-                    cert = ctx.getChild(4).accept(self)
-                    defDict[id.value].append(cert)
-            
-            else:
-                defDict[id.value].append('type2')
-                exp = ctx.expression().accept(self)
-                if (exp.type == 'id'):
-                    #print(exp.value.value)
-                    defDict[id.value].append(exp.value)
-                
+                    
                 constraints = ctx.constraints().accept(self)
                 defDict[id.value].append(constraints)
-                #defDict[id].append('constraint')
+                
+            else:
+                defDict[id.value].append('type5')
+                defDict[id.value].append(exp.value)
+    
+        elif(id.type == 'string'):
+            if not ctx.constraints():
+                exp = ctx.expression().accept(self)
+            
+                if(ctx.SIGNEDBY()):
+                    if(exp.type == 'id'):
+                        defDict[id.value].append('type2a') # id COLON exp (id) <= cert
+                    else:
+                        defDict[id.value].append('type2b') # id COLON exp (name) <= cert
+                    defDict[id.value].append(exp.value)
+                    cert = ctx.getChild(4).accept(self)
+                    defDict[id.value].append(cert)
+                
+                else:
+                    defDict[id.value].append('type5') # id colon exp (name)
+                    defDict[id.value].append(exp.value)
+            
+            else:
+                exp = ctx.expression().accept(self)
+                constraints = ctx.constraints().accept(self)
+                
+                if (not ctx.SIGNEDBY()):
+                    if (exp.type == 'id'):
+                        defDict[id.value].append('type3a') # id COLON exp(id) AND constraint
+
+                
+                    elif (exp.type == 'name'):
+                        defDict[id.value].append('type3b')  # id COLON exp(name) AND constraint
+                    
+                    defDict[id.value].append(exp.value)
+                    defDict[id.value].append(constraints)
+                    
+                        
+                else:
+                    if (exp.type == 'id'):
+                        defDict[id.value].append('type4a') # id COLON exp(id) AND constraint <= cert
+                        #print("hola")
+                
+                    elif (exp.type == 'name'):
+                        defDict[id.value].append('type4b') # id COLON exp(name) AND constraint <= cert
+                        #print("ola")
+                        
+                    defDict[id.value].append(exp.value)
+                    defDict[id.value].append(constraints)
+                    
+                    cert = ctx.getChild(6).accept(self)
+                    print(cert.value)
+                    defDict[id.value].append(cert)
+                    
+                    
                     
             
             #translate(defDict)
@@ -75,9 +119,13 @@ class CustomVisitor(dctVisitor):
             id.value = ctx.STRING().getText()
             
             
-        if(ctx.ustring()):
+        elif(ctx.ustring()):
             id.type = 'uString'
             id.value = ctx.ustring().accept(self)
+        
+        elif (ctx.hstring()):
+            id.type = 'hString'
+            id.value = ctx.hstring().accept(self)
             
         return id
             
@@ -129,7 +177,7 @@ def translate(dict):
     #print(len(dict.keys()))
 
     for key,values in dict.items():
-        if values[0] == 'type1':
+        if values[0] in ['type2b', 'type5']:
             res = ''
             res = res + key + ' : '
             for v in values[1]:
@@ -140,29 +188,82 @@ def translate(dict):
                         res += v.value + '/'
                 else:
                     res += v.value + '/'
-            res += ' { '+ values[2].value + ' }'
+            if(values[0] == 'type2b'):
+                res += ' { '+ values[2].value + ' }'
             print(res)
-
-        elif values[0] == 'type2':
+        
+        elif values[0] == 'type2a':
             previd = dict.get(values[1].value)
+            #print(previd)
+            #print("hola")
+            constraints = previd[2]
+            #print(previd)
+            #print(constraints)
+            #if(previd != None):
+            for m in constraints:
+                res = ''
+                res = res + key + ' : '
+                for v in previd[1]:
+                    #if(v.type == 'uString'):
+                    if v.value in m:
+                        res += m[v.value] + '/'
+                    elif v.value in idDict:
+                        res += idDict[v.value] + '/'
+                            
+                    else:
+                        res += v.value + '/'
+                res += ' { '+ values[2].value + ' }'
+                print(res)
+
+        elif values[0] in ['type3a', 'type4a']:
+            previd = dict.get(values[1].value)
+            #print(previd)
             if(previd != None):
                 constraints = values[2]
+                #print(constraints)
                 for m in constraints:
                     res = ''
                     res = res + key + ' : '
                     for v in previd[1]:
-                        if(v.type == 'uString'):
-                            if v.value in m:
-                                res += m[v.value] + '/'
-                            elif v.value in idDict:
-                                res += idDict[v.value] + '/'
+                        #if(v.type == 'uString'):
+                        if v.value in m:
+                            res += m[v.value] + '/'
+                        elif v.value in idDict:
+                            res += idDict[v.value] + '/'
                             
-                            else:
-                                res += v.value + '/'
                         else:
                             res += v.value + '/'
-
-                    res += ' { '+ previd[2].value + ' }'
+                    if(values[0] == 'type3a'):
+                        #print("hol")
+                        #print(previd[3].value)
+                        res += ' { '+ previd[2].value + ' }'
+                    elif (values[0] == 'type4a'):
+                        res += ' { '+ values[3].value + ' }'
+                    print(res)
+        
+        elif values[0] in ['type3b', 'type4b']:
+            constraints = values[2]
+            print(constraints)
+            #previd = dict.get(values[1].value)
+            #print(values[1])
+            for m in constraints:
+                res = ''
+                res = res + key + ' : '
+                for v in values[1]:
+                    if(v.type == 'uString'):
+                        if v.value in m:
+                            res += m[v.value] + '/'
+                        elif v.value in idDict:
+                            res += idDict[v.value] + '/'
+                            
+                        else:
+                            res += v.value + '/'
+                    else:
+                        res += v.value + '/'
+                if(values[0] == 'type4b'):
+                    print("hol")
+                    print(values[3].value)
+                    res += ' { '+ values[3].value + ' }'
                     print(res)
                 
             

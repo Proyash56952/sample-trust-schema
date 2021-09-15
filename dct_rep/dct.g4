@@ -4,7 +4,9 @@ schema : (definition)+;
 
 definition: identifier COLON STRING
 		| identifier COLON expression SIGNEDBY identifier
-		| identifier COLON expression AND constraints;
+		| identifier COLON expression AND constraints
+		| identifier COLON expression AND constraints SIGNEDBY identifier		
+		| identifier COLON expression;
 
 expression: name | identifier;
 

@@ -1,0 +1,5 @@
+#command: _network/_domain/target/_topic/_roleId/pType/pArgs/_origin/_cTS &
+                { _topic: command, _origin: sysId, _cTS: timestamp } <= opCert
+ocommand: #command <= opCert
+ucommand: #command & { target: local } | { pType: Pinger } <= userCert
+
