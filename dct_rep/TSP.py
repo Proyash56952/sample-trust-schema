@@ -184,45 +184,28 @@ class CustomVisitor(dctVisitor):
             ids.append(c.accept(self))
         return ids
 
-def translate(dict):
-    for key,values in dict.items():
-        if values[0] in ['type2b', 'type5']:
-            res = ''
-            res = res + key + ' : '
-            for v in values[1]:
-                if(v.type == 'uString'):
-                    if v.value in idDict:
-                        res += idDict[v.value] + '/'
-                    else:
-                        res += v.value + '/'
-                else:
-                    res += v.value + '/'
-            if(values[0] == 'type2b'):
-                res += ' { '+ values[2].value + ' }'
-            print(res)
-        
-        elif values[0] == 'type2a':
-            previd = dict.get(values[1].value)
-            constraints = previd[2]
-            for m in constraints:
+def translate(dict,file):
+    with open (file, 'w') as output:
+        for key,values in dict.items():
+            if values[0] in ['type2b', 'type5']:
                 res = ''
                 res = res + key + ' : '
-                for v in previd[1]:
-                    #if(v.type == 'uString'):
-                    if v.value in m:
-                        res += m[v.value] + '/'
-                    elif v.value in idDict:
-                        res += idDict[v.value] + '/'
-                            
+                for v in values[1]:
+                    if(v.type == 'uString'):
+                        if v.value in idDict:
+                            res += idDict[v.value] + '/'
+                        else:
+                            res += v.value + '/'
                     else:
                         res += v.value + '/'
-                res += ' { '+ values[2].value + ' }'
+                if(values[0] == 'type2b'):
+                    res += ' { '+ values[2].value + ' }'
                 print(res)
-
-        elif values[0] in ['type3a', 'type4a']:
-            previd = dict.get(values[1].value)
-            if(previd != None):
-                constraints = values[2]
+                output.write(res + '\n\n')
+        
+            elif values[0] == 'type2a':
+                previd = dict.get(values[1].value)
+                constraints = previd[2]
                 for m in constraints:
                     res = ''
                     res = res + key + ' : '
@@ -232,35 +215,56 @@ def translate(dict):
                             res += m[v.value] + '/'
                         elif v.value in idDict:
                             res += idDict[v.value] + '/'
-                            
+                                
                         else:
                             res += v.value + '/'
-                    if(values[0] == 'type3a' and len(previd) > 2):
-                        res += ' { '+ previd[2].value + ' }'
-                    elif (values[0] == 'type4a'):
+                    res += ' { '+ values[2].value + ' }'
+                    print(res)
+                    output.write(res + '\n\n')
+
+            elif values[0] in ['type3a', 'type4a']:
+                previd = dict.get(values[1].value)
+                if(previd != None):
+                    constraints = values[2]
+                    for m in constraints:
+                        res = ''
+                        res = res + key + ' : '
+                        for v in previd[1]:
+                            #if(v.type == 'uString'):
+                            if v.value in m:
+                                res += m[v.value] + '/'
+                            elif v.value in idDict:
+                                res += idDict[v.value] + '/'
+                                
+                            else:
+                                res += v.value + '/'
+                        if(values[0] == 'type3a' and len(previd) > 2):
+                            res += ' { '+ previd[2].value + ' }'
+                        elif (values[0] == 'type4a'):
+                            res += ' { '+ values[3].value + ' }'
+                        print(res)
+                        output.write(res + '\n\n')
+                        
+            elif values[0] in ['type3b', 'type4b']:
+                constraints = values[2]
+                for m in constraints:
+                    res = ''
+                    res = res + key + ' : '
+                    for v in values[1]:
+                        if(v.type == 'uString'):
+                            if v.value in m:
+                                res += m[v.value] + '/'
+                            elif v.value in idDict:
+                                res += idDict[v.value] + '/'
+                                
+                            else:
+                                res += v.value + '/'
+                        else:
+                            res += v.value + '/'
+                    if(values[0] == 'type4b'):
                         res += ' { '+ values[3].value + ' }'
-                    print(res)
-        
-        elif values[0] in ['type3b', 'type4b']:
-            constraints = values[2]
-            for m in constraints:
-                res = ''
-                res = res + key + ' : '
-                for v in values[1]:
-                    if(v.type == 'uString'):
-                        if v.value in m:
-                            res += m[v.value] + '/'
-                        elif v.value in idDict:
-                            res += idDict[v.value] + '/'
-                            
-                        else:
-                            res += v.value + '/'
-                    else:
-                        res += v.value + '/'
-                if(values[0] == 'type4b'):
-                    res += ' { '+ values[3].value + ' }'
-                    print(res)
-                
+                        print(res)
+                        output.write(res + '\n\n')
             
             
 def get_parse_tree(file_name):
@@ -272,6 +276,7 @@ def get_parse_tree(file_name):
     return tree, parser.getNumberOfSyntaxErrors()
 
 tree, err = get_parse_tree(sys.argv[1])
+outputfile = sys.argv[2]
 if err == 0:
     visitor = CustomVisitor()
     try:
@@ -282,6 +287,6 @@ if err == 0:
         print("\nSyntax error occurred in the policy file!\n")
         sys.exit(1)
 
-    translate(defDict)
+    translate(defDict, outputfile)
 
         

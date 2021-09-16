@@ -1,3 +1,28 @@
-_network: Alice
-_domain: dnmp
-_keyinfo: KEY
+netCert : "AliceNetOps"/"KEY"/
+
+dnmpCert : "AliceNetOps"/"dnmp"/"KEY"/ { netCert }
+
+nodCert : "AliceNetOps"/"dnmp"/nod/_nodId/"KEY"/ { deviceCert }
+
+deviceCert : "AliceNetOps"/device/devId/"KEY"/ { configCert }
+
+configCert : "AliceNetOps"/config/confId/"KEY"/ { netCert }
+
+roleCert : "AliceNetOps"/"dnmp"/_role/_roleId/"KEY"/ { dnmpCert }
+
+opCert : "AliceNetOps"/"dnmp"/"operator"/_roleId/"KEY"/ { dnmpCert }
+
+userCert : "AliceNetOps"/"dnmp"/"user"/_roleId/"KEY"/ { dnmpCert }
+
+ocommand : "AliceNetOps"/"dnmp"/target/"command"/_roleId/pType/pArgs/sysId()/timestamp()/ { opCert }
+
+ucommand : "AliceNetOps"/"dnmp"/"local"/"command"/_roleId/pType/pArgs/sysId()/timestamp()/ { userCert }
+
+ucommand : "AliceNetOps"/"dnmp"/target/"command"/_roleId/"Pinger"/pArgs/sysId()/timestamp()/ { userCert }
+
+#wirePrefix : _ndnprefix/"dnmp"/target/
+
+wpLocal : "localhost"/"dnmp"/"local"/
+
+wpOther : "localnet"/"dnmp"/target/
+
