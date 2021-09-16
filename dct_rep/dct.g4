@@ -22,7 +22,9 @@ constraints: constraint ( OR constraint)*;
 
 constraint: BO constraint_body (COMA constraint_body)* BC;
 
-constraint_body: identifier COLON literal | identifier COLON STRING;
+constraint_body: identifier COLON literal | identifier COLON STRING | identifier COLON function;
+
+function: STRING BRACKET;
 
 COLON: ':';
 
@@ -33,6 +35,8 @@ AND: '&';
 BO: '{';
 
 BC: '}';
+
+BRACKET: '()';
 
 OR: '|';
 

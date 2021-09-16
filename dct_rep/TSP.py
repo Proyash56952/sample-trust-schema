@@ -148,7 +148,10 @@ class CustomVisitor(dctVisitor):
         
     def visitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
         id = ctx.identifier().accept(self)
-        s = '"'+ ctx.literal().accept(self) + '"'
+        if(ctx.literal()):
+            s = '"'+ ctx.literal().accept(self) + '"'
+        elif(ctx.function):
+            s = ctx.function().accept(self)+'()'
         return id, s
         
     
@@ -160,6 +163,9 @@ class CustomVisitor(dctVisitor):
         
     def visitLiteral(self, ctx:dctParser.LiteralContext):
         #print(ctx.AP().getText())
+        return ctx.STRING().getText()
+    
+    def visitFunction(self, ctx:dctParser.FunctionContext):
         return ctx.STRING().getText()
         
     def visitExpression(self, ctx:dctParser.ExpressionContext):

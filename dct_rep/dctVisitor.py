@@ -59,6 +59,11 @@ class dctVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by dctParser#function.
+    def visitFunction(self, ctx:dctParser.FunctionContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by dctParser#ustring.
     def visitUstring(self, ctx:dctParser.UstringContext):
         return self.visitChildren(ctx)

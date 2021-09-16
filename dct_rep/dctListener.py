@@ -98,6 +98,15 @@ class dctListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by dctParser#function.
+    def enterFunction(self, ctx:dctParser.FunctionContext):
+        pass
+
+    # Exit a parse tree produced by dctParser#function.
+    def exitFunction(self, ctx:dctParser.FunctionContext):
+        pass
+
+
     # Enter a parse tree produced by dctParser#ustring.
     def enterUstring(self, ctx:dctParser.UstringContext):
         pass
