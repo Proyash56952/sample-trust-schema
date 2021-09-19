@@ -2,13 +2,9 @@ grammar dct;
 
 schema : (definition)+;
 
-definition: identifier COLON literal
-		| identifier COLON expression SIGNEDBY identifier
-		| identifier COLON expression AND constraints
-		| identifier COLON expression AND constraints SIGNEDBY identifier		
-		| identifier COLON expression;
+definition: identifier COLON expression (constraints)? (certificates)?;
 
-expression: name | identifier;
+expression: name | identifier | literal;
 
 name: (identifier slash)+ identifier;
 
@@ -18,13 +14,15 @@ signing_chain: STRING;
 
 literal: (AP)(STRING)(AP);
 
-constraints: constraint ( OR constraint)*;
+constraints: AND constraint ( OR constraint)*;
 
 constraint: BO constraint_body (COMA constraint_body)* BC;
 
-constraint_body: identifier COLON literal | identifier COLON STRING | identifier COLON function;
+constraint_body: identifier COLON (literal | function);
 
 function: STRING BRACKET;
+
+certificates: SIGNEDBY identifier (OR identifier)*;
 
 COLON: ':';
 

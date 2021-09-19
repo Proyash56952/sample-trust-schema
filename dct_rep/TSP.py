@@ -9,6 +9,10 @@ from collections import defaultdict
 idDict = {}
 defDict = defaultdict(list)
 #defDict = {}
+chainDict = {}
+pub = []
+cert = set()
+
 
 class Schema:
     pass
@@ -200,6 +204,9 @@ def translate(dict,file):
                         res += v.value + '/'
                 if(values[0] == 'type2b'):
                     res += ' { '+ values[2].value + ' }'
+                    #print(values[2].value, key)
+                    chainDict[key] = values[2].value
+                    cert.add(values[2].value)
                 print(res)
                 output.write(res + '\n\n')
         
@@ -219,7 +226,10 @@ def translate(dict,file):
                         else:
                             res += v.value + '/'
                     res += ' { '+ values[2].value + ' }'
+                    chainDict[key] = values[2].value
+                    cert.add(values[2].value)
                     print(res)
+                    
                     output.write(res + '\n\n')
 
             elif values[0] in ['type3a', 'type4a']:
@@ -240,8 +250,13 @@ def translate(dict,file):
                                 res += v.value + '/'
                         if(values[0] == 'type3a' and len(previd) > 2):
                             res += ' { '+ previd[2].value + ' }'
+                            chainDict[key] = previd[2].value
+                            cert.add(previd[2].value)
                         elif (values[0] == 'type4a'):
                             res += ' { '+ values[3].value + ' }'
+                            chainDict[key] = values[3].value
+                            cert.add(values[3].value)
+                                                        
                         print(res)
                         output.write(res + '\n\n')
                         
@@ -263,9 +278,36 @@ def translate(dict,file):
                             res += v.value + '/'
                     if(values[0] == 'type4b'):
                         res += ' { '+ values[3].value + ' }'
+                        chainDictdict[key] = values[3].value
+                        cert.add(values[3].value)
                         print(res)
                         output.write(res + '\n\n')
-            
+                        
+def translate_signing_chain(file):
+    with open (file, 'a') as output:
+        output.write('\n\n\n\n')
+        output.write('Signing Chain: \n\n')
+        #for key, value in chainDict.items():
+            #if (key in ['ocommand', 'ucommand']):
+                #i = key
+                #res = ''
+                #while i in chainDict.keys():
+                    #print(chainDict[i])
+                    #res += i + ' <= '
+                    #i = chainDict[i]
+                #res += i
+                #output.write(res + '\n\n')
+                
+        for key, value in chainDict.items():
+            i = key
+            res = ''
+            while i in chainDict.keys():
+                    #print(chainDict[i])
+                res += i + ' <= '
+                i = chainDict[i]
+            res += i
+            output.write(res + '\n\n')
+                
             
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
@@ -288,5 +330,8 @@ if err == 0:
         sys.exit(1)
 
     translate(defDict, outputfile)
+    print(chainDict)
+    print(cert)
+    translate_signing_chain(outputfile)
 
         

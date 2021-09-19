@@ -1,0 +1,3 @@
+_network: "AliceNetOps"
+
+dnmpCert: _network/_domain/_keyinfo <= netCert
