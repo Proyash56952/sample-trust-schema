@@ -8,12 +8,6 @@ from collections import defaultdict
 
 idDict = {}
 defDict = defaultdict(list)
-cacheDict = defaultdict(list)
-#defDict = {}
-chainDict = {}
-pub = []
-cert = set()
-
 
 class Schema:
     pass
@@ -132,122 +126,64 @@ class CustomVisitor(dctVisitor):
             ids.append(c.accept(self))
         return ids
 
-
-def replace_identifier(exp,constraints):
+    
+def replace_identifier(exp):
+    name = []
+    for e in exp.value:
+        if e.value in idDict:
+            name.append(idDict[e.value])
+        else:
+            name.append(e.value)
+    return name
+    
+def replace_constraints(names,constraints):
     res = []
-    if(constraints):
+    for name in names:
         for m in constraints:
-            name = ''
-            for n in exp.value:
-                if n.value in idDict:
-                    name += idDict[n.value] + '/'
-                elif n.value in m:
-                    name += m[n.value] + '/'
-                else:
-                    name += n.value + '/'
-            res.append(name)
-    else:
-        name = ''
-        for n in exp.value:
-            if n.value in idDict:
-                name += idDict[n.value] + '/'
-            else:
-                name += n.value + '/'
-        res.append(name)
-    return res
-    
-#def replace_identifier(exp):
-    #name = []
-    #for e in exp.value:
-        #if e.value in idDict:
-            #name.append(idDict[e.value])
-        #else:
-            #name.append(e.value)
-    #return name
-    
-def replace_constraints(name,constraints):
-    res = []
-    for m in constraints:
-        temp = []
-        for n in name:
-            print(m,n)
-            #if(n in m):
-                #temp.append(m[n])
-                #print(m[n])
-            #else:
-                #temp.append(n)
-        res.append(temp)
-    return res
-    
-def add_cert(name, certificates):
-    res = []
-    for c in certificates:
-        for n in name:
-            r = n + '\t{' + c.value + '}'
-            res.append(r)
-    return res
-            
-def translate(dict,file):
-    #print(defDict)
-    with open (file, 'w') as output:
-        for key,values in dict.items():
-            _exp = values[0]
-            _constraints = values[1]
-            _certificates = values[2]
-            
-            if(_exp.type == 'id'):
-                #if(_exp.value.value in cacheDict.keys()):
-                    #name = cacheDict[_exp.value.value]
-                #else:
-                previd = defDict.get(_exp.value.value)
-                #print(_exp.value.value)
-                #print("hola")
-                        #defDict[key][0] = previd[0]
-                        #defDict[key][1] = previd[1]
-                        #defDict[key][2] = previd[2]
-                _exp = previd[0]
-                        
-                if (not _constraints and previd[1]):
-                    _constraints = previd[1]
-                            
-                if (not _certificates and previd[2]):
-                    _certificates = previd[2]
-                    
-                    
-                #if(_exp.value in cacheDict.keys()):
-                    #print(cacheDict.get(key))
-                    #print("hola")
-            name = replace_identifier(_exp,_constraints)
-                
-            #if(_constraints):
-                #name = replace_constraints(name,_constraints)
-
-            
-            #print(key, name)
-            
-            #cacheDict[key].append(name)
-            #print(cacheDict[key])
-            if(_certificates):
-                name = add_cert(name,_certificates)
-            
+            temp = []
             for n in name:
-                print(key + ' : ' + n+'\n')
+                if(n in m):
+                    temp.append(m[n])
+                else:
+                    temp.append(n)
+            res.append(temp)
+    return res
+    
+def generate_output (key, names, certificates):
+    res = []
+    for name in names:
+        r = ''
+        for n in name:
+            r += n + '/'
+        if(certificates):
+            for c in certificates:
+                r +='   {' + c.value + '}'
+        res.append(r)
+        print(key + ': ' + r)
+        print('\n')
+    return res
+                
+def translate(dict):
+    for key, values in dict.items():
+        _exp = values[0]
+        _constraints = values[1]
+        _certificates = values[2]
+        names = []
+        if(_exp.type == 'id'):
+            previd = defDict.get(_exp.value.value)
+            names = previd[0]
+                                
+            if (not _certificates and previd[2]):
+                _certificates = previd[2]
+                
+        else:
+            names.append(replace_identifier(_exp))
+        
+        if(_constraints):
+            names = replace_constraints(names,_constraints)
 
-def translate_signing_chain(file):
-    with open (file, 'a') as output:
-        output.write('\n\n\n\n')
-        output.write('Signing Chain: \n\n')
-                
-        for key, value in chainDict.items():
-            i = key
-            res = ''
-            while i in chainDict.keys():
-                    #print(chainDict[i])
-                res += i + ' <= '
-                i = chainDict[i]
-            res += i
-            output.write(res + '\n\n')
-                
+        defDict[key][0] = names
+        generate_output(key,names,_certificates)
             
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
@@ -264,17 +200,10 @@ if err == 0:
     try:
         tree.accept(visitor)
         print(idDict)
-        #print(defDict)
-        #for key,values in defDict.items():
-            
 
     except Exception as e:
         print("\nSyntax error occurred in the policy file!\n")
         sys.exit(1)
 
-    translate(defDict, outputfile)
-    #print(chainDict)
-    #print(cert)
-    #translate_signing_chain(outputfile)
-
+    translate(defDict)
         
