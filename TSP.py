@@ -12,6 +12,7 @@ tokenList = set()
 tokenDict = {}
 certDict = {}
 tagDict = {}
+templateDict = {}
 
 
 class Schema:
@@ -205,7 +206,6 @@ def buildStringTable():
     for key,val in tokenDict.items():
         s_tab += key
         length = len(key)
-        #print(type(key))
         tokenDict[key] = [index,position, length]
         index += 1
         position += length
@@ -229,19 +229,23 @@ def buildCert():
         else:
             name = exp
 
-        for n in name.value:
+        for i,n in enumerate(name.value):
             if(constraints and n.value in constraints[0]):
                 comp = constraints[0][n.value]
+                cert.append(tokenDict[comp][0])
             elif(n.value in idDict):
                 comp = idDict[n.value]
+                cert.append(tokenDict[comp][0])
+            elif(n.type == 'uString'):
+                cert.append(160+i)
             else:
                 comp = n.value
-            cert.append(tokenDict[comp][0])
+                cert.append(tokenDict[comp][0])
+            
 
-        if(signer):
-            certDict[key] = [certIndex,cert,signer]
-        else:
-            certDict[key] = [certIndex,cert,-1]
+        if(not signer):
+            signer = -1
+        certDict[key] = [certIndex,cert,signer]
             
         certIndex += 1
 
