@@ -44,6 +44,15 @@ class dctListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by dctParser#component.
+    def enterComponent(self, ctx:dctParser.ComponentContext):
+        pass
+
+    # Exit a parse tree produced by dctParser#component.
+    def exitComponent(self, ctx:dctParser.ComponentContext):
+        pass
+
+
     # Enter a parse tree produced by dctParser#identifier.
     def enterIdentifier(self, ctx:dctParser.IdentifierContext):
         pass

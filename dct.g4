@@ -6,7 +6,9 @@ definition: identifier COLON expression (constraints)? (certificates)?;
 
 expression: name | identifier | literal;
 
-name: (identifier slash)+ identifier;
+name: (component slash)+ component;
+
+component: literal | identifier | function;
 
 identifier: STRING | ustring | hstring;
 

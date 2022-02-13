@@ -29,6 +29,11 @@ class dctVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by dctParser#component.
+    def visitComponent(self, ctx:dctParser.ComponentContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by dctParser#identifier.
     def visitIdentifier(self, ctx:dctParser.IdentifierContext):
         return self.visitChildren(ctx)

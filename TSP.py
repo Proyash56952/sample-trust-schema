@@ -8,6 +8,11 @@ from collections import defaultdict
 
 idDict = {}
 defDict = defaultdict(list)
+tokenList = set()
+tokenDict = {}
+certDict = {}
+tagDict = {}
+
 
 class Schema:
     pass
@@ -64,6 +69,9 @@ class CustomVisitor(dctVisitor):
         elif (ctx.hstring()):
             id.type = 'hString'
             id.value = ctx.hstring().accept(self)
+            #tokenList.add(id.value)
+            tokenDict[id.value] = [-1,-1,-1]
+            tagDict[id.value] = [-1,-1]
             
         return id
             
@@ -92,6 +100,7 @@ class CustomVisitor(dctVisitor):
         certs = []
         for i in ctx.identifier():
             certs.append(i.accept(self))
+            certDict[i.accept(self).value] = [-1,-1]
         return certs
     
     def visitUstring(self, ctx:dctParser.UstringContext):
@@ -102,6 +111,8 @@ class CustomVisitor(dctVisitor):
         
     def visitLiteral(self, ctx:dctParser.LiteralContext):
         #print(ctx.STRING().getText())
+        #tokenList.add(ctx.STRING().getText())
+        tokenDict[ctx.STRING().getText()] = [-1,-1,-1]
         return ctx.STRING().getText()
     
     def visitFunction(self, ctx:dctParser.FunctionContext):
@@ -118,13 +129,16 @@ class CustomVisitor(dctVisitor):
         elif (ctx.literal()):
             e.value = ctx.literal().accept(self)
             e.type = 'literal'
+            #tokenList.add(e.value)
         return e
     
     def visitName(self, ctx:dctParser.NameContext):
-        ids = []
-        for c in ctx.identifier():
-            ids.append(c.accept(self))
-        return ids
+        components = []
+        for c in ctx.component():
+            components.append(c.accept(self))
+            #tokenList.add(c.accept(self).value)
+            tokenDict[c.accept(self).value] = [-1,-1,-1]
+        return components
 
     
 def replace_identifier(exp):
@@ -184,6 +198,23 @@ def translate(dict):
 
         defDict[key][0] = names
         generate_output(key,names,_certificates)
+
+def buildStringTable():
+    index, position = 0, 0
+    s_tab = ""
+    for key,val in tokenDict.items():
+        s_tab += key
+        length = len(key)
+        tokenDict[key] = [index,position, length]
+        index += 1
+        position += length
+    return s_tab
+
+def buildTag():
+    index = 0
+    for key,val in tagDict.items():
+        tagDict[key] = [index, -1]
+        index += 1
             
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
@@ -192,6 +223,7 @@ def get_parse_tree(file_name):
     parser = dctParser(stream)
     tree = parser.schema()
     return tree, parser.getNumberOfSyntaxErrors()
+    
 
 tree, err = get_parse_tree(sys.argv[1])
 outputfile = sys.argv[2]
@@ -205,5 +237,14 @@ if err == 0:
         print("\nSyntax error occurred in the policy file!\n")
         sys.exit(1)
 
-    translate(defDict)
+    #translate(defDict)
+    for i,v in enumerate(tokenList):
+        print(i,v,type(v))
+    s_tab = buildStringTable()
+    print(tokenDict)
+    print(s_tab)
+    print(certDict)
+    buildTag()
+    print(tagDict)
+    
         
