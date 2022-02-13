@@ -45,7 +45,7 @@ class CustomVisitor(dctVisitor):
         id = ctx.identifier().accept(self)
         
         if(id.type == 'uString'):
-            idDict[id.value] = '"' + ctx.expression().accept(self).value + '"'
+            idDict[id.value] = ctx.expression().accept(self).value
         
         else:
             exp = ctx.expression().accept(self)
@@ -91,7 +91,7 @@ class CustomVisitor(dctVisitor):
     def visitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
         id = ctx.identifier().accept(self)
         if(ctx.literal()):
-            s = '"'+ ctx.literal().accept(self) + '"'
+            s = ctx.literal().accept(self)
         elif(ctx.function):
             s = ctx.function().accept(self)+'()'
         return id, s
@@ -100,7 +100,7 @@ class CustomVisitor(dctVisitor):
         certs = []
         for i in ctx.identifier():
             certs.append(i.accept(self))
-            certDict[i.accept(self).value] = [-1,-1]
+            certDict[i.accept(self).value] = [-1,-1,-1]
         return certs
     
     def visitUstring(self, ctx:dctParser.UstringContext):
@@ -150,18 +150,18 @@ def replace_identifier(exp):
             name.append(e.value)
     return name
     
-def replace_constraints(names,constraints):
+def replace_constraints(name,constraints):
     res = []
-    for name in names:
-        for m in constraints:
-            temp = []
-            for n in name:
-                if(n in m):
-                    temp.append(m[n])
-                else:
-                    temp.append(n)
-            res.append(temp)
+    for m in constraints:
+        temp = []
+        for n in name:
+            if(n in m):
+                temp.append(m[n])
+            else:
+                temp.append(n)
+        res.append(temp)
     return res
+
     
 def generate_output (key, names, certificates):
     res = []
@@ -205,10 +205,45 @@ def buildStringTable():
     for key,val in tokenDict.items():
         s_tab += key
         length = len(key)
+        #print(type(key))
         tokenDict[key] = [index,position, length]
         index += 1
         position += length
     return s_tab
+
+def buildCert():
+    certIndex = 0
+    
+    for key,val in certDict.items():
+        cert = []
+        exp = defDict[key][0]
+        constraints = defDict[key][1]
+        signer = defDict[key][2]
+        
+        if(exp.type == 'id'):
+            previd = defDict.get(exp.value.value)
+            name = previd[0]
+            
+            if(not signer and previd[2]):
+                signer = previd[2]
+        else:
+            name = exp
+
+        for n in name.value:
+            if(constraints and n.value in constraints[0]):
+                comp = constraints[0][n.value]
+            elif(n.value in idDict):
+                comp = idDict[n.value]
+            else:
+                comp = n.value
+            cert.append(tokenDict[comp][0])
+
+        if(signer):
+            certDict[key] = [certIndex,cert,signer]
+        else:
+            certDict[key] = [certIndex,cert,-1]
+            
+        certIndex += 1
 
 def buildTag():
     tagIndex = 0
@@ -242,13 +277,14 @@ if err == 0:
         sys.exit(1)
 
     #translate(defDict)
-    for i,v in enumerate(tokenList):
-        print(i,v,type(v))
     s_tab = buildStringTable()
-    #print(tokenDict)
+    print(tokenDict)
     #print(s_tab)
     #print(certDict)
-    buildTag()
-    print(tagDict)
+    #buildTag()
+    #print(tagDict)
+    
+    buildCert()
+    print(certDict)
     
         
