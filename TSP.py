@@ -211,10 +211,14 @@ def buildStringTable():
     return s_tab
 
 def buildTag():
-    index = 0
+    tagIndex = 0
     for key,val in tagDict.items():
-        tagDict[key] = [index, -1]
-        index += 1
+        name = defDict[key][0].value
+        tag = []
+        for n in name:
+            tag.append(tokenDict[n.value][0])
+        tagDict[key] = [tagIndex, tag]
+        tagIndex += 1
             
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
@@ -241,9 +245,9 @@ if err == 0:
     for i,v in enumerate(tokenList):
         print(i,v,type(v))
     s_tab = buildStringTable()
-    print(tokenDict)
-    print(s_tab)
-    print(certDict)
+    #print(tokenDict)
+    #print(s_tab)
+    #print(certDict)
     buildTag()
     print(tagDict)
     
