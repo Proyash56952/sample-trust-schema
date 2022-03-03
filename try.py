@@ -10,10 +10,12 @@ class Model(TlvModel):          # Model = [Name] [IntVal] [StrVal] [BoolVal]
 model = Model()
 #model.name = '/name/hi'
 model.token_val = b'tok'
+print(type(model.token_val))
 #model.str_val = b'bit string hola'
 model.tag_val = b'tag'
 #assert model.encode() == b'\x07\x06\x08\x04name\x02\nbit string'
 res = model.encode()
+print(model.encoded_length())
 print(res)
 #print(model.asdict())
 

@@ -15,11 +15,24 @@ certDict = {}
 tagDict = {}
 templateDict = {}
 
+class NestedModel(TlvModel):
+    str_val = BytesField(0x84)
+    tok_val = BytesField(0x85)
+
+#class TokenTableModel(TlvModel):
+    #val = BytesField(0x85)
+    
+class TrustSchemaModel(TlvModel):
+    inner = ModelField(0x83,NestedModel)
+    #tok_tab = ModelField(0x83,TokenTableModel)
+
+
+
 
 class Model(TlvModel):          # Model = [Name] [IntVal] [StrVal] [BoolVal]
     #name = NameField()          # Name = NAME-TYPE TLV-LENGTH ...
     string_table =BytesField(0x84)
-    token_val = BytesField(0x85)   # IntVal = INT-VAL-TYPE TLV-LENGTH nonNegativeInteger
+    token_table = BytesField(0x85)   # IntVal = INT-VAL-TYPE TLV-LENGTH nonNegativeInteger
     tag_val = BytesField(0x88)  # StrVal = STR-VAL-TYPE TLV-LENGTH *OCTET
     cert_val = BytesField(0x86)
     bool_val = BoolField(0x01)  # BoolVal = BOOL-VAL-TYPE 0
@@ -306,7 +319,30 @@ def buildTemplate():
                 
         templateDict[key] = [tempIndex,template]
         tempIndex += 1
-        
+
+def encode_s_tab(s_tab):
+    b_s_tab = bytes(s_tab.encode())
+    #model.string_table = b_s_tab
+    #string_table_model.str_val = b_s_tab
+    trustSchemaModel.inner.str_val = b_s_tab
+
+def encode_token_table():
+    s = []
+    k = []
+    for key,val in tokenDict.items():
+        #print(val[1],val[2])
+        for i in key:
+            k.append(ord(i))
+        s.append(val[1])
+        s.append(val[2])
+    #print(bytearray(k))
+    print(s)
+    #print(bytearray(s))
+    #model.string_table = bytes(k)
+    #print((bytes(s)))
+    #model.token_table = bytes(s)
+    trustSchemaModel.inner.tok_val = bytes(s)
+    
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
     lexer = dctLexer(schema_src_code)
@@ -318,6 +354,7 @@ def get_parse_tree(file_name):
 
 tree, err = get_parse_tree(sys.argv[1])
 outputfile = sys.argv[2]
+f = open(outputfile,"w")
 if err == 0:
     visitor = CustomVisitor()
     try:
@@ -329,14 +366,19 @@ if err == 0:
         sys.exit(1)
 
     #translate(defDict)
-    model = Model()
+    trustSchemaModel = TrustSchemaModel()
+    trustSchemaModel.inner = NestedModel()
+    #trustSchemaModel.tok_tab = TokenTableModel()
+    
+    
+    #model = Model()
     s_tab = buildStringTable()
-    b_s_tab = bytearray(s_tab.encode())
-    print(tokenDict)
+    
+    #b_s_tab = bytearray(s_tab.encode())
+    #print(tokenDict)
     #print(b_s_tab)
-    model.string_table = b_s_tab
-    res = model.encode()
-    #print(res)
+    #model.string_table = b_s_tab
+    
     #print(certDict)
     #buildTag()
     #print(tagDict)
@@ -345,6 +387,13 @@ if err == 0:
     #print(certDict)
     #buildTemplate()
     #print(templateDict)
+    
+    encode_s_tab(s_tab)
+    encode_token_table()
+    
+    res = trustSchemaModel.encode()
+    print(res)
+    f.write(str(res))
     
     
     
