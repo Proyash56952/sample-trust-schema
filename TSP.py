@@ -5,6 +5,7 @@ from dctParser import dctParser
 from dctVisitor import dctVisitor
 import sys
 from collections import defaultdict
+from ndn.encoding import *
 
 idDict = {}
 defDict = defaultdict(list)
@@ -14,6 +15,14 @@ certDict = {}
 tagDict = {}
 templateDict = {}
 
+
+class Model(TlvModel):          # Model = [Name] [IntVal] [StrVal] [BoolVal]
+    #name = NameField()          # Name = NAME-TYPE TLV-LENGTH ...
+    string_table =BytesField(0x84)
+    token_val = BytesField(0x85)   # IntVal = INT-VAL-TYPE TLV-LENGTH nonNegativeInteger
+    tag_val = BytesField(0x88)  # StrVal = STR-VAL-TYPE TLV-LENGTH *OCTET
+    cert_val = BytesField(0x86)
+    bool_val = BoolField(0x01)  # BoolVal = BOOL-VAL-TYPE 0
 
 class Schema:
     pass
@@ -56,6 +65,15 @@ class CustomVisitor(dctVisitor):
             defDict[id.value].append(constraints)
             defDict[id.value].append(certificates)
             
+            if(id.type == 'hString'):
+                tagDict[id.value] = [-1,-1]
+                templateDict[id.value] = [-1,-1]
+        
+            if(exp.type == 'id' and exp.value.type == 'hString' and constraints):
+                templateDict[id.value] = [-1,-1]
+                
+            
+            
     def visitIdentifier(self, ctx:dctParser.IdentifierContext):
         id = Identifier()
         
@@ -72,7 +90,8 @@ class CustomVisitor(dctVisitor):
             id.value = ctx.hstring().accept(self)
             #tokenList.add(id.value)
             tokenDict[id.value] = [-1,-1,-1]
-            tagDict[id.value] = [-1,-1]
+            #tagDict[id.value] = [-1,-1]
+            templateDict[id.value] = [-1,-1]
             
         return id
             
@@ -258,7 +277,36 @@ def buildTag():
             tag.append(tokenDict[n.value][0])
         tagDict[key] = [tagIndex, tag]
         tagIndex += 1
+        
+def buildTemplate():
+    tempIndex = 0
+    for key,val in templateDict.items():
+        template = []
+        exp = defDict[key][0]
+        constraints = defDict[key][1]
+        
+        if(exp.type == 'id'):
+            previd = defDict.get(exp.value.value)
+            name = previd[0]
+        else:
+            name = exp
             
+        for i,n in enumerate(name.value):
+            if(constraints and n.value in constraints[0]):
+                comp = constraints[0][n.value]
+                template.append(tokenDict[comp][0])
+            elif(n.value in idDict):
+                comp = idDict[n.value]
+                template.append(tokenDict[comp][0])
+            elif(n.type == 'uString'):
+                template.append(160+i)
+            else:
+                #comp = n.value
+                template.append(80+i)
+                
+        templateDict[key] = [tempIndex,template]
+        tempIndex += 1
+        
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
     lexer = dctLexer(schema_src_code)
@@ -281,14 +329,23 @@ if err == 0:
         sys.exit(1)
 
     #translate(defDict)
+    model = Model()
     s_tab = buildStringTable()
+    b_s_tab = bytearray(s_tab.encode())
     print(tokenDict)
-    #print(s_tab)
+    #print(b_s_tab)
+    model.string_table = b_s_tab
+    res = model.encode()
+    #print(res)
     #print(certDict)
     #buildTag()
     #print(tagDict)
     
-    buildCert()
-    print(certDict)
+    #buildCert()
+    #print(certDict)
+    #buildTemplate()
+    #print(templateDict)
+    
+    
     
         
