@@ -4,6 +4,7 @@ from dctListener import dctListener
 from dctParser import dctParser
 from dctVisitor import dctVisitor
 import sys
+import binascii
 from collections import defaultdict
 from ndn.encoding import *
 
@@ -336,12 +337,12 @@ def encode_token_table():
         s.append(val[1])
         s.append(val[2])
     #print(bytearray(k))
-    print(s)
+    #print(s)
     #print(bytearray(s))
     #model.string_table = bytes(k)
     #print((bytes(s)))
     #model.token_table = bytes(s)
-    trustSchemaModel.inner.tok_val = bytes(s)
+    trustSchemaModel.inner.tok_val = bytearray(s)
     
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
@@ -375,18 +376,24 @@ if err == 0:
     s_tab = buildStringTable()
     
     #b_s_tab = bytearray(s_tab.encode())
-    #print(tokenDict)
+    print('Tokens:')
+    print(tokenDict)
+    print('\n')
     #print(b_s_tab)
     #model.string_table = b_s_tab
+    buildCert()
+    print('Certificate:')
+    print(certDict)
+    print('\n')
+    buildTag()
+    print('Tags:')
+    print(tagDict)
+    print('\n')
     
     #print(certDict)
-    #buildTag()
-    #print(tagDict)
-    
-    #buildCert()
-    #print(certDict)
-    #buildTemplate()
-    #print(templateDict)
+    buildTemplate()
+    print('Template:')
+    print(templateDict)
     
     encode_s_tab(s_tab)
     encode_token_table()
