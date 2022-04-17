@@ -17,5 +17,5 @@ netCert: _network/_keyinfo
 #wirePrefix: _ndnprefix & { _ndnprefix: "localnet" }
 #wireValidator: "EdDSA"
 
-_keyinfo: "KEY"/_/"dct"/_
+_keyinfo: "KEY"
 

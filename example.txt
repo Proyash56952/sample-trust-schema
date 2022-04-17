@@ -2,7 +2,7 @@ _network: "AliceNetOps"
 // hola
 _domain: "dnmp"
 
-_keyinfo: "KEY"
+
 
 netCert: _network/_keyinfo
 
@@ -17,10 +17,9 @@ opCert:   roleCert & { _role: "operator" }
 userCert: roleCert & { _role: "user" }
 
 #command: _network/_domain/target/_topic/_roleId/pType/pArgs/_origin/_cTS &
-                { _topic: "command", _origin: "sysId", _cTS: "timestamp" } <= opCert
+                { _topic: "command", _origin: "sysId", _cTS: "timestamp" }
 ocommand: #command <= opCert
 ucommand: #command & { target: "local"} | { pType: "Pinger" } <= userCert
 
-#wirePrefix: _ndnprefix/_domain/target
-wpLocal: #wirePrefix & { _ndnprefix: "localhost", target: "local" }
-wpOther: #wirePrefix & { _ndnprefix: "localnet" }
+
+_keyinfo: "KEY"

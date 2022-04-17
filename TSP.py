@@ -16,6 +16,11 @@ certDict = {}
 tagDict = {}
 templateDict = {}
 
+primary = []
+parent = defaultdict(list)
+cons = {}
+signer = {}
+
 class NestedModel(TlvModel):
     str_val = BytesField(0x84)
     tok_val = BytesField(0x85)
@@ -79,12 +84,27 @@ class CustomVisitor(dctVisitor):
             defDict[id.value].append(constraints)
             defDict[id.value].append(certificates)
             
+            if(certificates):
+                for c in certificates:
+                    signer[id.value] = c.value
+            
+            if(constraints):
+                #print(constraints)
+                cons[id.value] = constraints
+            
             if(id.type == 'hString'):
+                primary.append(id.value)
+                #parent[id.value] = [id.value]
                 tagDict[id.value] = [-1,-1]
                 templateDict[id.value] = [-1,-1]
         
+            elif(exp.type == 'id'):
+                parent[exp.value.value].append(id.value)
+            
             if(exp.type == 'id' and exp.value.type == 'hString' and constraints):
                 templateDict[id.value] = [-1,-1]
+            
+            
                 
             
             
@@ -321,6 +341,34 @@ def buildTemplate():
         templateDict[key] = [tempIndex,template]
         tempIndex += 1
 
+def expandSigner():
+    for key,val in parent.items():
+        for v in val:
+            if (v not in signer.keys()):
+                signer[v] = signer[key]
+
+def buildTempChain():
+    tempChain = []
+    for pr in primary:
+        for key,val in parent.items():
+            #print(key,val)
+            if(key == pr):
+                for v in val:
+                    temp = []
+                    temp.append(v)
+                    while(1):
+                        if(v in signer.keys()):
+                            v = signer[v]
+                            temp.append(v)
+                            #print(key)
+                        else:
+                            break
+                            
+                    #print(temp)
+                    tempChain.append(temp)
+    return tempChain
+                        
+
 def encode_s_tab(s_tab):
     b_s_tab = bytes(s_tab.encode())
     #model.string_table = b_s_tab
@@ -352,10 +400,14 @@ def get_parse_tree(file_name):
     tree = parser.schema()
     return tree, parser.getNumberOfSyntaxErrors()
     
+def formatPrint(dic):
+    for key,val in dic.items():
+        print(key,val)
+    print('\n')
 
 tree, err = get_parse_tree(sys.argv[1])
 outputfile = sys.argv[2]
-f = open(outputfile,"w")
+f = open(outputfile,"wb")
 if err == 0:
     visitor = CustomVisitor()
     try:
@@ -370,37 +422,50 @@ if err == 0:
     trustSchemaModel = TrustSchemaModel()
     trustSchemaModel.inner = NestedModel()
     #trustSchemaModel.tok_tab = TokenTableModel()
-    
-    
+    '''
+    print(primary)
+    print(parent)
+    '''
+    print(signer)
+    #print(cons)
     #model = Model()
     s_tab = buildStringTable()
     
+    expandSigner()
+    print(signer)
+    tc = buildTempChain()
+    print(tc)
+    
+    
+    #print(defDict)
+    
     #b_s_tab = bytearray(s_tab.encode())
-    print('Tokens:')
-    print(tokenDict)
-    print('\n')
-    #print(b_s_tab)
-    #model.string_table = b_s_tab
+    
+    #print('Tokens:')
+    #formatPrint(tokenDict)
+    
+    
+    
+    '''
     buildCert()
     print('Certificate:')
-    print(certDict)
-    print('\n')
+    formatPrint(certDict)
     buildTag()
     print('Tags:')
-    print(tagDict)
-    print('\n')
+    formatPrint(tagDict)
+
     
-    #print(certDict)
     buildTemplate()
     print('Template:')
-    print(templateDict)
+    formatPrint(templateDict)
     
     encode_s_tab(s_tab)
     encode_token_table()
     
     res = trustSchemaModel.encode()
-    print(res)
-    f.write(str(res))
+    #print(res)
+    f.write(res)
+    '''
     
     
     
