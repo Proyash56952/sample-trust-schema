@@ -18,6 +18,10 @@ templateDict = {}
 
 parentList = set()
 childList = []
+tempList = []
+literalList = []
+chainList = []
+pubList = []
 
 primary = []
 parent = defaultdict(list)
@@ -100,7 +104,7 @@ class CustomVisitor(dctVisitor):
             if(id.type == 'hString'):
                 primary.append(id.value)
                 #parent[id.value] = [id.value]
-                tagDict[id.value] = [-1,-1]
+                #tagDict[id.value] = [-1,-1]
                 templateDict[id.value] = [-1,-1]
         
             elif(exp.type == 'id'):
@@ -177,6 +181,7 @@ class CustomVisitor(dctVisitor):
         #print(ctx.STRING().getText())
         #tokenList.add(ctx.STRING().getText())
         tokenDict[ctx.STRING().getText()] = [-1,-1,-1]
+        literalList.append(ctx.STRING().getText())
         return ctx.STRING().getText()
     
     def visitFunction(self, ctx:dctParser.FunctionContext):
@@ -360,7 +365,6 @@ def buildTempChain():
                         else:
                             break
                             
-                    #print(temp)
                     tempChain.append(temp)
     return tempChain
                         
@@ -427,10 +431,50 @@ def handleChildrenCons():
                 else:
                     names = parentNames
             tempDict[key] = names
-                            
-            
-        
 
+def buildTag(t,idx):
+    tag = []
+    name = tempDict[t][0]
+
+    for n in name:
+        tag.append(tokenDict[n][0])
+    tagDict[t] = [idx,tag]
+
+def buildTemplate(name):
+    temp = []
+    for i,n in enumerate(name):
+        if(n in idDict):
+            comp = idDict[n]
+            temp.append(tokenDict[comp][0])
+        elif(n in literalList):
+            temp.append(tokenDict[n][0])
+        elif(n.startswith ('_')):
+            temp.append(160+i)
+        else:
+            temp.append(80+i)
+    tempList.append(temp)
+    return len(tempList)-1
+            
+
+def buildpub():
+    tagIdx = tempIdx = chainIdx = pubIdx = 0
+    for p in primary:
+        buildTag(p,tagIdx)
+        tagIdx += 1
+        for c in parent[p]:
+            tems = tempDict[c]
+            for t in tems:
+                idx = buildTemplate(t)
+                for a in tc:
+                    #print(c)
+                    if(a[0] == c):
+                        chain = []
+                        for i in range(1,len(a)):
+                            certIdx = certDict[a[i]][0]
+                            #print(certIdx)
+                            chain.append(certIdx)
+                        chainList.append(chain)
+                pubList.append([idx,len(chainList)-1])
 def encode_s_tab(s_tab):
     b_s_tab = bytes(s_tab.encode())
     #model.string_table = b_s_tab
@@ -491,23 +535,23 @@ if err == 0:
     #print(signer)
     #print(parent)
     #print(parentList)
-    #print(childList)
+    #print(children)
     #model = Model()
     s_tab = buildStringTable()
-    '''
+    
     expandSigner()
-    print(signer)
+    #print(signer)
     tc = buildTempChain()
-    print(tc)
-    '''
+    #print(tc)
+    
     
     handleCons()
-    formatPrint(tempDict)
+    #formatPrint(tempDict)
     
     #b_s_tab = bytearray(s_tab.encode())
     
-    print('Tokens:')
-    formatPrint(tokenDict)
+    #print('Tokens:')
+    #formatPrint(tokenDict)
     
     
     
@@ -515,6 +559,15 @@ if err == 0:
     buildCert()
     print('Certificate:')
     formatPrint(certDict)
+    
+    buildpub()
+    print(tempList)
+    print(chainList)
+    print(pubList)
+    #formatPrint(tagDict)
+    #print(tempList)
+    
+    #print(literalList)
     '''
     buildTag()
     print('Tags:')
