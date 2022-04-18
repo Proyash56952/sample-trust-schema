@@ -16,10 +16,15 @@ certDict = {}
 tagDict = {}
 templateDict = {}
 
+parentList = set()
+childList = []
+
 primary = []
 parent = defaultdict(list)
+children = {}
 cons = {}
 signer = {}
+tempDict = {}
 
 class NestedModel(TlvModel):
     str_val = BytesField(0x84)
@@ -100,6 +105,9 @@ class CustomVisitor(dctVisitor):
         
             elif(exp.type == 'id'):
                 parent[exp.value.value].append(id.value)
+                parentList.add(exp.value.value)
+                childList.append(id.value)
+                children[id.value] = exp.value.value
             
             if(exp.type == 'id' and exp.value.type == 'hString' and constraints):
                 templateDict[id.value] = [-1,-1]
@@ -132,6 +140,7 @@ class CustomVisitor(dctVisitor):
     def visitConstraints(self, ctx:dctParser.ConstraintsContext):
         cl = []
         for c in ctx.constraint():
+            #print(c.accept(self))
             cl.append(c.accept(self))
         return cl
             
@@ -148,6 +157,7 @@ class CustomVisitor(dctVisitor):
             s = ctx.literal().accept(self)
         elif(ctx.function):
             s = ctx.function().accept(self)+'()'
+        #print (id.value, s)
         return id, s
         
     def visitCertificates(self, ctx:dctParser.CertificatesContext):
@@ -368,6 +378,72 @@ def buildTempChain():
                     tempChain.append(temp)
     return tempChain
                         
+'''
+def handleCons():
+    for key,val in defDict.items():
+        exp = val[0]
+        constraints = val[1]
+        print(constraints)
+        
+        if(exp.type == 'id'):
+            name = defDict[exp.value.value][0]
+        else:
+            name = exp
+'''
+
+def handleCons():
+    handleParentCons()
+    handleChildrenCons()
+    
+def handleParentCons():
+    for key,val in defDict.items():
+        if(key not in childList):
+            names = []
+            exp = val[0]
+            cons = val[1]
+            if(cons):
+                for c in cons:
+                    name = []
+                    for i , n in enumerate(exp.value):
+                        if(n.value in c):
+                            comp = c[n.value]
+                            name.append(comp)
+                        else:
+                            name.append(n.value)
+                    names.append(name)
+                    
+            else:
+                name = []
+                for i,n in enumerate(exp.value):
+                    name.append(n.value)
+                names.append(name)
+
+            tempDict[key] = names
+
+def handleChildrenCons():
+    for key,val in defDict.items():
+        if(key in childList):
+            p = children[key]
+            parentNames = tempDict[p]
+            cons = val[1]
+            names = []
+            for parentName in parentNames:
+                if(cons):
+                    for c in cons:
+                        name = []
+                        for i, n in enumerate (parentName):
+                            if (n in c):
+                                comp = c[n]
+                                name.append(comp)
+                            else:
+                                name.append(n)
+                        names.append(name)
+                else:
+                    names = parentNames
+            tempDict[key] = names
+                            
+            
+        
 
 def encode_s_tab(s_tab):
     b_s_tab = bytes(s_tab.encode())
@@ -426,18 +502,21 @@ if err == 0:
     print(primary)
     print(parent)
     '''
-    print(signer)
-    #print(cons)
+    #print(signer)
+    #print(parent)
+    #print(parentList)
+    #print(childList)
     #model = Model()
-    s_tab = buildStringTable()
-    
+    #s_tab = buildStringTable()
+    '''
     expandSigner()
     print(signer)
     tc = buildTempChain()
     print(tc)
+    '''
     
-    
-    #print(defDict)
+    handleCons()
+    formatPrint(tempDict)
     
     #b_s_tab = bytearray(s_tab.encode())
     
