@@ -164,7 +164,7 @@ class CustomVisitor(dctVisitor):
         certs = []
         for i in ctx.identifier():
             certs.append(i.accept(self))
-            certDict[i.accept(self).value] = [-1,-1,-1]
+            certDict[i.accept(self).value] = [-1,-1]
         return certs
     
     def visitUstring(self, ctx:dctParser.UstringContext):
@@ -279,38 +279,24 @@ def buildCert():
     
     for key,val in certDict.items():
         cert = []
-        exp = defDict[key][0]
-        constraints = defDict[key][1]
-        signer = defDict[key][2]
-        
-        if(exp.type == 'id'):
-            previd = defDict.get(exp.value.value)
-            name = previd[0]
-            
-            if(not signer and previd[2]):
-                signer = previd[2]
-        else:
-            name = exp
+        exp = tempDict[key][0]
 
-        for i,n in enumerate(name.value):
-            if(constraints and n.value in constraints[0]):
-                comp = constraints[0][n.value]
+        for i,n in enumerate(exp):
+            if(n in idDict):
+                comp = idDict[n]
                 cert.append(tokenDict[comp][0])
-            elif(n.value in idDict):
-                comp = idDict[n.value]
-                cert.append(tokenDict[comp][0])
-            elif(n.type == 'uString'):
-                cert.append(160+i)
+            #elif(n.type == 'uString'):
+                #cert.append(160+i)
             else:
-                comp = n.value
+                comp = n
                 cert.append(tokenDict[comp][0])
             
 
-        if(not signer):
-            signer = -1
-        certDict[key] = [certIndex,cert,signer]
+
+        certDict[key] = [certIndex,cert]
             
         certIndex += 1
+
 
 def buildTag():
     tagIndex = 0
@@ -507,7 +493,7 @@ if err == 0:
     #print(parentList)
     #print(childList)
     #model = Model()
-    #s_tab = buildStringTable()
+    s_tab = buildStringTable()
     '''
     expandSigner()
     print(signer)
@@ -520,15 +506,16 @@ if err == 0:
     
     #b_s_tab = bytearray(s_tab.encode())
     
-    #print('Tokens:')
-    #formatPrint(tokenDict)
+    print('Tokens:')
+    formatPrint(tokenDict)
     
     
     
-    '''
+    
     buildCert()
     print('Certificate:')
     formatPrint(certDict)
+    '''
     buildTag()
     print('Tags:')
     formatPrint(tagDict)
