@@ -29,6 +29,7 @@ children = {}
 cons = {}
 signer = {}
 tempDict = {}
+chainDict = {}
 
 class NestedModel(TlvModel):
     str_val = BytesField(0x84)
@@ -290,8 +291,8 @@ def buildCert():
             if(n in idDict):
                 comp = idDict[n]
                 cert.append(tokenDict[comp][0])
-            #elif(n.type == 'uString'):
-                #cert.append(160+i)
+            elif((n.startswith ('_'))):
+                cert.append(160+i)
             else:
                 comp = n
                 cert.append(tokenDict[comp][0])
@@ -466,15 +467,20 @@ def buildpub():
             for t in tems:
                 idx = buildTemplate(t)
                 for a in tc:
-                    #print(c)
+                    print(c)
                     if(a[0] == c):
                         chain = []
                         for i in range(1,len(a)):
                             certIdx = certDict[a[i]][0]
                             #print(certIdx)
                             chain.append(certIdx)
-                        chainList.append(chain)
+                        if(chain not in chainList):
+                            chainList.append(chain)
+                        #chainDict[c] = [chainIdx,chain]
+                        #chainIdx = len(chainDict) - 1
                 pubList.append([idx,len(chainList)-1])
+                #pubList.append([idx,chainIdx])
+                                
 def encode_s_tab(s_tab):
     b_s_tab = bytes(s_tab.encode())
     #model.string_table = b_s_tab
