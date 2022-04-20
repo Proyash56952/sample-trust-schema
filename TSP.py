@@ -34,6 +34,10 @@ chainDict = {}
 class NestedModel(TlvModel):
     str_val = BytesField(0x84)
     tok_val = BytesField(0x85)
+    cert = BytesField(0x86)
+    tag = BytesField(0x87)
+    template = BytesField(0x88)
+    publication = BytesField(0x89)
 
 #class TokenTableModel(TlvModel):
     #val = BytesField(0x85)
@@ -504,6 +508,50 @@ def encode_token_table():
     #model.token_table = bytes(s)
     trustSchemaModel.inner.tok_val = bytearray(s)
     
+def encode_cert():
+    s = []
+    for key,val in certDict.items():
+        s.append(val[0])
+        s.append(len(val[1]))
+        for i in val[1]:
+            s.append(i)
+    trustSchemaModel.inner.cert = bytearray(s)
+
+def encode_tag():
+    s = []
+    for key,val in tagDict.items():
+        s.append(val[0])
+        s.append(len(val[1]))
+        for i in val[1]:
+            s.append(i)
+    trustSchemaModel.inner.tag = bytearray(s)
+        
+def encode_template():
+    s = []
+    for i,n in enumerate(tempList):
+        s.append(i)
+        s.append(len(n))
+        for j in n:
+            s.append(j)
+    trustSchemaModel.inner.template = bytearray(s)
+
+def encode_pub():
+    s = []
+    for i , n in enumerate(pubList):
+        s.append(i)
+        s.append(n[0])
+        s.append(n[1])
+    trustSchemaModel.inner.publication = bytearray(s)
+    
+    
+def encode():
+    encode_s_tab(s_tab)
+    encode_token_table()
+    encode_cert()
+    encode_tag()
+    encode_template()
+    encode_pub()
+    
 def get_parse_tree(file_name):
     schema_src_code = FileStream(file_name)
     lexer = dctLexer(schema_src_code)
@@ -570,8 +618,9 @@ if err == 0:
     print(tempList)
     print(chainList)
     print(pubList)
+    print(tagDict)
     #formatPrint(tagDict)
-    #print(tempList)
+    print(tempList)
     
     #print(literalList)
     '''
@@ -583,14 +632,13 @@ if err == 0:
     buildTemplate()
     print('Template:')
     formatPrint(templateDict)
-    
-    encode_s_tab(s_tab)
-    encode_token_table()
+    '''
+    encode()
     
     res = trustSchemaModel.encode()
     #print(res)
     f.write(res)
-    '''
+    
     
     
     
