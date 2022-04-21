@@ -13,11 +13,11 @@ deviceCert: _network/device/devId/_keyinfo <= configCert
 configCert: _network/config/confId/_keyinfo <= netCert
 
 roleCert: _network/_domain/_role/_roleId/_keyinfo <= dnmpCert
-opCert:   roleCert & { _role: "operator" }
+opCert:   roleCert & { _role: "operator", _roleId : "pro" }
 userCert: roleCert & { _role: "user" }
 
 #command: _network/_domain/target/_topic/_roleId/pType/pArgs/_origin/_cTS &
-                { _topic: "command", _origin: "sysId", _cTS: "timestamp" }
+                { _topic: "command" | "reply", _origin: "sysId", _cTS: "timestamp" }
 ocommand: #command <= opCert
 ucommand: #command & { target: "local"} | { pType: "Pinger" } <= userCert
 

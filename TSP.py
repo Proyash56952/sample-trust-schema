@@ -7,6 +7,7 @@ import sys
 import binascii
 from collections import defaultdict
 from ndn.encoding import *
+from itertools import product
 
 idDict = {}
 defDict = defaultdict(list)
@@ -14,6 +15,7 @@ tempDict = {}
 
 tokenDict = {}
 certDict = {}
+consDict = defaultdict(list)
 tagDict = {}
 tempList = []
 chainList = []
@@ -126,7 +128,9 @@ class CustomVisitor(dctVisitor):
         return cl
             
     def visitConstraint(self, ctx:dctParser.ConstraintContext):
+        l = []
         d = {}
+        #print(len(ctx.constraint_body()))
         for c in ctx.constraint_body():
             i, s = c.accept(self)
             d[i.value] = s
@@ -134,11 +138,22 @@ class CustomVisitor(dctVisitor):
         
     def visitConstraint_body(self, ctx:dctParser.Constraint_bodyContext):
         id = ctx.identifier().accept(self)
+        s = []
+        #print(len(ctx.components()))
+        for c in ctx.components():
+            s.append(c.accept(self))
+        '''if(ctx.literal()):
+            s = ctx.literal().accept(self)
+        elif(ctx.function):
+            s = ctx.function().accept(self)+'()'''
+        return id, s
+    
+    def visitComponents(self, ctx:dctParser.ComponentsContext):
         if(ctx.literal()):
             s = ctx.literal().accept(self)
         elif(ctx.function):
             s = ctx.function().accept(self)+'()'
-        return id, s
+        return s
         
     def visitCertificates(self, ctx:dctParser.CertificatesContext):
         certs = []
@@ -241,19 +256,50 @@ def buildTempChain():
                         
 
 def handleCons():
+    expand_cons()
+    #formatPrint(consDict)
     handleParentCons()
     handleChildrenCons()
+    
+def expand_cons():
+    for key,val in cons.items():
+        #print(key,val)
+        for dic in val:
+            #print(dic)
+            #print(dic.values())
+            lis = list(product(*dic.values()))
+            tl = []
+            for l in lis:
+                idx = 0
+                temDic = {}
+                for k,v in dic.items():
+                    #print(k,l[idx])
+                    
+                    temDic[k] = l[idx]
+                    idx += 1
+                #print(temDic)
+                tl.append(temDic)
+            #print(tl)
+            for t in tl:
+                consDict[key].append(t)
+        #print(consDict)
+            #for k,v in dic.items():
+                #print(k,v)
     
 def handleParentCons():
     for key,val in defDict.items():
         if(key not in childList):
             names = []
             exp = val[0]
-            cons = val[1]
-            if(cons):
+            #cons = val[1]
+            if(consDict[key]):
+                cons = consDict[key]
+                print(cons)
                 for c in cons:
                     name = []
+                    #print(cons)
                     for i , n in enumerate(exp.value):
+                        #print(c)
                         if(n.value in c):
                             comp = c[n.value]
                             name.append(comp)
@@ -274,10 +320,11 @@ def handleChildrenCons():
         if(key in childList):
             p = children[key]
             parentNames = tempDict[p]
-            cons = val[1]
+            #cons = val[1]
             names = []
             for parentName in parentNames:
-                if(cons):
+                if(consDict[key]):
+                    cons = consDict[key]
                     for c in cons:
                         name = []
                         for i, n in enumerate (parentName):
@@ -325,7 +372,7 @@ def buildpub():
             for t in tems:
                 idx = buildTemplate(t)
                 for a in tc:
-                    print(c)
+                    #print(c)
                     if(a[0] == c):
                         chain = []
                         for i in range(1,len(a)):
@@ -425,14 +472,17 @@ if err == 0:
     trustSchemaModel.inner = NestedModel()
 
     s_tab = buildStringTable()
-    
+    formatPrint(tokenDict)
     expandSigner()
     tc = buildTempChain()
     
     handleCons()
     
+    
     buildCert()
     buildpub()
+    for i in tempList:
+        print(i)
 
     encode()
     

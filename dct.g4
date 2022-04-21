@@ -20,7 +20,9 @@ constraints: AND constraint ( OR constraint)*;
 
 constraint: BO constraint_body (COMA constraint_body)* BC;
 
-constraint_body: identifier COLON (literal | function);
+constraint_body: identifier COLON components (OR components)*;
+
+components: (literal | function);
 
 function: STRING BRACKET;
 
