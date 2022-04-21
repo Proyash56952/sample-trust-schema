@@ -10,26 +10,24 @@ from ndn.encoding import *
 
 idDict = {}
 defDict = defaultdict(list)
-tokenList = set()
+tempDict = {}
+
 tokenDict = {}
 certDict = {}
 tagDict = {}
-templateDict = {}
-
-parentList = set()
-childList = []
 tempList = []
-literalList = []
 chainList = []
 pubList = []
 
+parentList = set()
+childList = []
+literalList = []
 primary = []
 parent = defaultdict(list)
 children = {}
 cons = {}
 signer = {}
-tempDict = {}
-chainDict = {}
+
 
 class NestedModel(TlvModel):
     str_val = BytesField(0x84)
@@ -39,23 +37,8 @@ class NestedModel(TlvModel):
     template = BytesField(0x88)
     publication = BytesField(0x89)
 
-#class TokenTableModel(TlvModel):
-    #val = BytesField(0x85)
-    
 class TrustSchemaModel(TlvModel):
     inner = ModelField(0x83,NestedModel)
-    #tok_tab = ModelField(0x83,TokenTableModel)
-
-
-
-
-class Model(TlvModel):          # Model = [Name] [IntVal] [StrVal] [BoolVal]
-    #name = NameField()          # Name = NAME-TYPE TLV-LENGTH ...
-    string_table =BytesField(0x84)
-    token_table = BytesField(0x85)   # IntVal = INT-VAL-TYPE TLV-LENGTH nonNegativeInteger
-    tag_val = BytesField(0x88)  # StrVal = STR-VAL-TYPE TLV-LENGTH *OCTET
-    cert_val = BytesField(0x86)
-    bool_val = BoolField(0x01)  # BoolVal = BOOL-VAL-TYPE 0
 
 class Schema:
     pass
@@ -103,14 +86,10 @@ class CustomVisitor(dctVisitor):
                     signer[id.value] = c.value
             
             if(constraints):
-                #print(constraints)
                 cons[id.value] = constraints
             
             if(id.type == 'hString'):
                 primary.append(id.value)
-                #parent[id.value] = [id.value]
-                #tagDict[id.value] = [-1,-1]
-                templateDict[id.value] = [-1,-1]
         
             elif(exp.type == 'id'):
                 parent[exp.value.value].append(id.value)
@@ -118,11 +97,8 @@ class CustomVisitor(dctVisitor):
                 childList.append(id.value)
                 children[id.value] = exp.value.value
             
-            if(exp.type == 'id' and exp.value.type == 'hString' and constraints):
-                templateDict[id.value] = [-1,-1]
-            
-            
-                
+            #if(exp.type == 'id' and exp.value.type == 'hString' and constraints):
+                #templateDict[id.value] = [-1,-1]
             
             
     def visitIdentifier(self, ctx:dctParser.IdentifierContext):
@@ -139,17 +115,13 @@ class CustomVisitor(dctVisitor):
         elif (ctx.hstring()):
             id.type = 'hString'
             id.value = ctx.hstring().accept(self)
-            #tokenList.add(id.value)
             tokenDict[id.value] = [-1,-1,-1]
-            #tagDict[id.value] = [-1,-1]
-            templateDict[id.value] = [-1,-1]
             
         return id
             
     def visitConstraints(self, ctx:dctParser.ConstraintsContext):
         cl = []
         for c in ctx.constraint():
-            #print(c.accept(self))
             cl.append(c.accept(self))
         return cl
             
@@ -166,7 +138,6 @@ class CustomVisitor(dctVisitor):
             s = ctx.literal().accept(self)
         elif(ctx.function):
             s = ctx.function().accept(self)+'()'
-        #print (id.value, s)
         return id, s
         
     def visitCertificates(self, ctx:dctParser.CertificatesContext):
@@ -183,8 +154,6 @@ class CustomVisitor(dctVisitor):
         return ctx.HASH().getText() + ctx.STRING().getText()
         
     def visitLiteral(self, ctx:dctParser.LiteralContext):
-        #print(ctx.STRING().getText())
-        #tokenList.add(ctx.STRING().getText())
         tokenDict[ctx.STRING().getText()] = [-1,-1,-1]
         literalList.append(ctx.STRING().getText())
         return ctx.STRING().getText()
@@ -203,75 +172,15 @@ class CustomVisitor(dctVisitor):
         elif (ctx.literal()):
             e.value = ctx.literal().accept(self)
             e.type = 'literal'
-            #tokenList.add(e.value)
         return e
     
     def visitName(self, ctx:dctParser.NameContext):
         components = []
         for c in ctx.component():
             components.append(c.accept(self))
-            #tokenList.add(c.accept(self).value)
             tokenDict[c.accept(self).value] = [-1,-1,-1]
         return components
 
-    
-def replace_identifier(exp):
-    name = []
-    for e in exp.value:
-        if e.value in idDict:
-            name.append(idDict[e.value])
-        else:
-            name.append(e.value)
-    return name
-    
-def replace_constraints(name,constraints):
-    res = []
-    for m in constraints:
-        temp = []
-        for n in name:
-            if(n in m):
-                temp.append(m[n])
-            else:
-                temp.append(n)
-        res.append(temp)
-    return res
-
-    
-def generate_output (key, names, certificates):
-    res = []
-    for name in names:
-        r = ''
-        for n in name:
-            r += n + '/'
-        if(certificates):
-            for c in certificates:
-                r +='   {' + c.value + '}'
-        res.append(r)
-        print(key + ': ' + r)
-        print('\n')
-    return res
-                
-def translate(dict):
-    for key, values in dict.items():
-        _exp = values[0]
-        _constraints = values[1]
-        _certificates = values[2]
-        names = []
-        if(_exp.type == 'id'):
-            previd = defDict.get(_exp.value.value)
-            names = previd[0]
-                                
-            if (not _certificates and previd[2]):
-                _certificates = previd[2]
-                
-        else:
-            names.append(replace_identifier(_exp))
-        
-        if(_constraints):
-            names = replace_constraints(names,_constraints)
-
-        defDict[key][0] = names
-        generate_output(key,names,_certificates)
 
 def buildStringTable():
     index, position = 0, 0
@@ -300,52 +209,11 @@ def buildCert():
             else:
                 comp = n
                 cert.append(tokenDict[comp][0])
-            
-
-
+        
         certDict[key] = [certIndex,cert]
             
         certIndex += 1
 
-
-def buildTag():
-    tagIndex = 0
-    for key,val in tagDict.items():
-        name = defDict[key][0].value
-        tag = []
-        for n in name:
-            tag.append(tokenDict[n.value][0])
-        tagDict[key] = [tagIndex, tag]
-        tagIndex += 1
-        
-def buildTemplate():
-    tempIndex = 0
-    for key,val in templateDict.items():
-        template = []
-        exp = defDict[key][0]
-        constraints = defDict[key][1]
-        
-        if(exp.type == 'id'):
-            previd = defDict.get(exp.value.value)
-            name = previd[0]
-        else:
-            name = exp
-            
-        for i,n in enumerate(name.value):
-            if(constraints and n.value in constraints[0]):
-                comp = constraints[0][n.value]
-                template.append(tokenDict[comp][0])
-            elif(n.value in idDict):
-                comp = idDict[n.value]
-                template.append(tokenDict[comp][0])
-            elif(n.type == 'uString'):
-                template.append(160+i)
-            else:
-                #comp = n.value
-                template.append(80+i)
-                
-        templateDict[key] = [tempIndex,template]
-        tempIndex += 1
 
 def expandSigner():
     for key,val in parent.items():
@@ -357,7 +225,6 @@ def buildTempChain():
     tempChain = []
     for pr in primary:
         for key,val in parent.items():
-            #print(key,val)
             if(key == pr):
                 for v in val:
                     temp = []
@@ -366,25 +233,12 @@ def buildTempChain():
                         if(v in signer.keys()):
                             v = signer[v]
                             temp.append(v)
-                            #print(key)
                         else:
                             break
                             
                     tempChain.append(temp)
     return tempChain
                         
-'''
-def handleCons():
-    for key,val in defDict.items():
-        exp = val[0]
-        constraints = val[1]
-        print(constraints)
-        
-        if(exp.type == 'id'):
-            name = defDict[exp.value.value][0]
-        else:
-            name = exp
-'''
 
 def handleCons():
     handleParentCons()
@@ -480,32 +334,21 @@ def buildpub():
                             chain.append(certIdx)
                         if(chain not in chainList):
                             chainList.append(chain)
-                        #chainDict[c] = [chainIdx,chain]
-                        #chainIdx = len(chainDict) - 1
                 pubList.append([idx,len(chainList)-1])
-                #pubList.append([idx,chainIdx])
                                 
 def encode_s_tab(s_tab):
     b_s_tab = bytes(s_tab.encode())
-    #model.string_table = b_s_tab
-    #string_table_model.str_val = b_s_tab
     trustSchemaModel.inner.str_val = b_s_tab
 
 def encode_token_table():
     s = []
     k = []
     for key,val in tokenDict.items():
-        #print(val[1],val[2])
         for i in key:
             k.append(ord(i))
         s.append(val[1])
         s.append(val[2])
-    #print(bytearray(k))
-    #print(s)
-    #print(bytearray(s))
-    #model.string_table = bytes(k)
-    #print((bytes(s)))
-    #model.token_table = bytes(s)
+        
     trustSchemaModel.inner.tok_val = bytearray(s)
     
 def encode_cert():
@@ -578,65 +421,22 @@ if err == 0:
         print("\nSyntax error occurred in the policy file!\n")
         sys.exit(1)
 
-    #translate(defDict)
     trustSchemaModel = TrustSchemaModel()
     trustSchemaModel.inner = NestedModel()
-    #trustSchemaModel.tok_tab = TokenTableModel()
-    '''
-    print(primary)
-    print(parent)
-    '''
-    #print(signer)
-    #print(parent)
-    #print(parentList)
-    #print(children)
-    #model = Model()
+
     s_tab = buildStringTable()
     
     expandSigner()
-    #print(signer)
     tc = buildTempChain()
-    #print(tc)
-    
     
     handleCons()
-    #formatPrint(tempDict)
-    
-    #b_s_tab = bytearray(s_tab.encode())
-    
-    #print('Tokens:')
-    #formatPrint(tokenDict)
-    
-    
-    
     
     buildCert()
-    print('Certificate:')
-    formatPrint(certDict)
-    
     buildpub()
-    print(tempList)
-    print(chainList)
-    print(pubList)
-    print(tagDict)
-    #formatPrint(tagDict)
-    print(tempList)
-    
-    #print(literalList)
-    '''
-    buildTag()
-    print('Tags:')
-    formatPrint(tagDict)
 
-    
-    buildTemplate()
-    print('Template:')
-    formatPrint(templateDict)
-    '''
     encode()
     
     res = trustSchemaModel.encode()
-    #print(res)
     f.write(res)
     
     
