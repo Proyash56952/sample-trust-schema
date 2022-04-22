@@ -18,7 +18,7 @@ userCert: roleCert & { _role: "user" }
 
 #command: _network/_domain/target/_topic/_roleId/pType/pArgs/_origin/_cTS &
                 { _topic: "command" | "reply", _origin: "sysId", _cTS: "timestamp" }
-ocommand: #command <= opCert
+ocommand: #command <= opCert | userCert
 ucommand: #command & { target: "local"} | { pType: "Pinger" } <= userCert
 
 

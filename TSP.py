@@ -28,16 +28,18 @@ primary = []
 parent = defaultdict(list)
 children = {}
 cons = {}
-signer = {}
+signer = defaultdict(list)
+tempChain = []
 
 
 class NestedModel(TlvModel):
     str_val = BytesField(0x84)
     tok_val = BytesField(0x85)
     cert = BytesField(0x86)
-    tag = BytesField(0x87)
-    template = BytesField(0x88)
-    publication = BytesField(0x89)
+    chain = BytesField(0x87)
+    tag = BytesField(0x88)
+    template = BytesField(0x89)
+    publication = BytesField(0x8a)
 
 class TrustSchemaModel(TlvModel):
     inner = ModelField(0x83,NestedModel)
@@ -85,7 +87,7 @@ class CustomVisitor(dctVisitor):
             
             if(certificates):
                 for c in certificates:
-                    signer[id.value] = c.value
+                    signer[id.value].append(c.value)
             
             if(constraints):
                 cons[id.value] = constraints
@@ -232,10 +234,43 @@ def buildCert():
 
 def expandSigner():
     for key,val in parent.items():
+        #print(key,val)
         for v in val:
+            #print(v,signer[v])
             if (v not in signer.keys()):
                 signer[v] = signer[key]
+            #print(v,signer[v])
+                
+def findRoot():
+    for v in signer.values():
+        for a in v:
+            if a not in signer.keys():
+                return a
 
+def find_all_paths(graph, start, end, path =[]):
+    path = path + [start]
+    if start == end:
+        return [path]
+    paths = []
+    print(start)
+    for node in graph[start]:
+        if node not in path:
+            newpaths = find_all_paths(graph, node, end, path)
+        for newpath in newpaths:
+            paths.append(newpath)
+    return paths
+
+def buildTempChain():
+    root = findRoot()
+    print(root)
+    for key,val in parent.items():
+        if key in primary:
+            print(val)
+            for v in val:
+                tc = find_all_paths(signer,v,root)
+                for t in tc:
+                    tempChain.append(t)
+'''
 def buildTempChain():
     tempChain = []
     for pr in primary:
@@ -244,16 +279,20 @@ def buildTempChain():
                 for v in val:
                     temp = []
                     temp.append(v)
+                    #print(v)
                     while(1):
-                        if(v in signer.keys()):
+                        #for k,l in signer.items():
+                            #print(k,l)
+                        if(v in list(signer.keys())):
                             v = signer[v]
                             temp.append(v)
                         else:
                             break
                             
                     tempChain.append(temp)
+    #print(tempChain)
     return tempChain
-                        
+'''
 
 def handleCons():
     expand_cons()
@@ -294,7 +333,7 @@ def handleParentCons():
             #cons = val[1]
             if(consDict[key]):
                 cons = consDict[key]
-                print(cons)
+                #print(cons)
                 for c in cons:
                     name = []
                     #print(cons)
@@ -370,8 +409,10 @@ def buildpub():
         for c in parent[p]:
             tems = tempDict[c]
             for t in tems:
+                tcl = set()
                 idx = buildTemplate(t)
-                for a in tc:
+                for a in tempChain:
+                    
                     #print(c)
                     if(a[0] == c):
                         chain = []
@@ -381,7 +422,8 @@ def buildpub():
                             chain.append(certIdx)
                         if(chain not in chainList):
                             chainList.append(chain)
-                pubList.append([idx,len(chainList)-1])
+                        tcl.add(len(chainList)-1)
+                pubList.append([idx,list(tcl)])
                                 
 def encode_s_tab(s_tab):
     b_s_tab = bytes(s_tab.encode())
@@ -407,6 +449,15 @@ def encode_cert():
             s.append(i)
     trustSchemaModel.inner.cert = bytearray(s)
 
+def encode_chain():
+    s = []
+    for i,n in enumerate(chainList):
+        s.append(i)
+        s.append(len(n))
+        for j in n:
+            s.append(j)
+    trustSchemaModel.inner.chain = bytearray(s)
+
 def encode_tag():
     s = []
     for key,val in tagDict.items():
@@ -430,7 +481,9 @@ def encode_pub():
     for i , n in enumerate(pubList):
         s.append(i)
         s.append(n[0])
-        s.append(n[1])
+        s.append(len(n[1]))
+        for m in n[1]:
+            s.append(m)
     trustSchemaModel.inner.publication = bytearray(s)
     
     
@@ -454,6 +507,20 @@ def formatPrint(dic):
     for key,val in dic.items():
         print(key,val)
     print('\n')
+    
+def listPrint(l):
+    for n in l:
+        print (n)
+    print('\n')
+
+def printall():
+    formatPrint(tokenDict)
+    formatPrint(certDict)
+    formatPrint(tagDict)
+    listPrint(chainList)
+    listPrint(tempList)
+    listPrint(pubList)
+    
 
 tree, err = get_parse_tree(sys.argv[1])
 outputfile = sys.argv[2]
@@ -472,19 +539,21 @@ if err == 0:
     trustSchemaModel.inner = NestedModel()
 
     s_tab = buildStringTable()
-    formatPrint(tokenDict)
+    #formatPrint(tokenDict)
     expandSigner()
-    tc = buildTempChain()
+    print(signer)
+    buildTempChain()
+    print(tempChain)
+    #formatPrint(defDict)
     
     handleCons()
     
     
     buildCert()
+    #formatPrint(certDict)
     buildpub()
-    for i in tempList:
-        print(i)
-
     encode()
+    printall()
     
     res = trustSchemaModel.encode()
     f.write(res)
