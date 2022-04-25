@@ -252,7 +252,7 @@ def find_all_paths(graph, start, end, path =[]):
     if start == end:
         return [path]
     paths = []
-    print(start)
+    #print(start)
     for node in graph[start]:
         if node not in path:
             newpaths = find_all_paths(graph, node, end, path)
@@ -262,10 +262,10 @@ def find_all_paths(graph, start, end, path =[]):
 
 def buildTempChain():
     root = findRoot()
-    print(root)
+    #print(root)
     for key,val in parent.items():
         if key in primary:
-            print(val)
+            #print(val)
             for v in val:
                 tc = find_all_paths(signer,v,root)
                 for t in tc:
@@ -541,9 +541,9 @@ if err == 0:
     s_tab = buildStringTable()
     #formatPrint(tokenDict)
     expandSigner()
-    print(signer)
+    #print(signer)
     buildTempChain()
-    print(tempChain)
+    #print(tempChain)
     #formatPrint(defDict)
     
     handleCons()

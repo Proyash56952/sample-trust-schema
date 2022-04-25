@@ -3,7 +3,7 @@ _network:    "iot0"
 
 
 #iotPub: _network/target/topic/trgtLoc/topicArgs/_origin/msgID/sCnt/mts & {
-    _origin:   sysId()
+    _origin:   "sysId"
 } <= roleCert
 
 roleCert:    _network/_role/_roleId/_keyinfo <= netCert
@@ -12,10 +12,10 @@ netCert: _network/_keyinfo
 
 #chainInfo: _role/_roleId <= roleCert
 
-#pubPrefix:    _network
-#pubValidator: "EdDSA"
-#wirePrefix: _ndnprefix & { _ndnprefix: "localnet" }
-#wireValidator: "EdDSA"
+//#pubPrefix:    _network
+//#pubValidator: "EdDSA"
+//#wirePrefix: _ndnprefix & { _ndnprefix: "localnet" }
+//#wireValidator: "EdDSA"
 
 _keyinfo: "KEY"
 
