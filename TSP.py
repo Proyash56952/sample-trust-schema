@@ -30,6 +30,7 @@ children = {}
 cons = {}
 signer = defaultdict(list)
 tempChain = []
+tempChainDic = defaultdict(list)
 
 
 class NestedModel(TlvModel):
@@ -37,9 +38,9 @@ class NestedModel(TlvModel):
     tok_val = BytesField(0x85)
     cert = BytesField(0x86)
     chain = BytesField(0x87)
-    tag = BytesField(0x88)
-    template = BytesField(0x89)
-    publication = BytesField(0x8a)
+    #tag = BytesField(0x88)
+    template = BytesField(0x88)
+    publication = BytesField(0x89)
 
 class TrustSchemaModel(TlvModel):
     inner = ModelField(0x83,NestedModel)
@@ -268,8 +269,13 @@ def buildTempChain():
             #print(val)
             for v in val:
                 tc = find_all_paths(signer,v,root)
+                #print(tc)
+                #print(signer)
                 for t in tc:
                     tempChain.append(t)
+                #print(tempChain)
+                for t in tc:
+                    tempChainDic[t[0]].append(t[1:])
 '''
 def buildTempChain():
     tempChain = []
@@ -406,14 +412,32 @@ def buildpub():
     for p in primary:
         buildTag(p,tagIdx)
         tagIdx += 1
+
         for c in parent[p]:
             tems = tempDict[c]
+
             for t in tems:
-                tcl = set()
+                tcl = []
                 idx = buildTemplate(t)
-                for a in tempChain:
+                
+                for key,vals in tempChainDic.items():
+                    if(key == c):
+                        for val in vals:
+                            #print(key,val)
+                            chain = []
+                            for i in range(0,len(val)):
+                                certIdx = certDict[val[i]][0]
+                                chain.append(certIdx)
+
+                            if(chain in chainList):
+                                tcl.append(chainList.index(chain))
+                            else:
+                                chainList.append(chain)
+                                tcl.append(len(chainList)-1)
                     
-                    #print(c)
+                    
+                '''
+                for a in tempChain:
                     if(a[0] == c):
                         chain = []
                         for i in range(1,len(a)):
@@ -423,6 +447,9 @@ def buildpub():
                         if(chain not in chainList):
                             chainList.append(chain)
                         tcl.add(len(chainList)-1)
+                #print(tcl)
+                '''
+                #print(tcl)
                 pubList.append([idx,list(tcl)])
                                 
 def encode_s_tab(s_tab):
@@ -443,7 +470,7 @@ def encode_token_table():
 def encode_cert():
     s = []
     for key,val in certDict.items():
-        s.append(val[0])
+        #s.append(val[0])
         s.append(len(val[1]))
         for i in val[1]:
             s.append(i)
@@ -452,7 +479,7 @@ def encode_cert():
 def encode_chain():
     s = []
     for i,n in enumerate(chainList):
-        s.append(i)
+        #s.append(i)
         s.append(len(n))
         for j in n:
             s.append(j)
@@ -470,7 +497,7 @@ def encode_tag():
 def encode_template():
     s = []
     for i,n in enumerate(tempList):
-        s.append(i)
+        #s.append(i)
         s.append(len(n))
         for j in n:
             s.append(j)
@@ -479,7 +506,7 @@ def encode_template():
 def encode_pub():
     s = []
     for i , n in enumerate(pubList):
-        s.append(i)
+        #s.append(i)
         s.append(n[0])
         s.append(len(n[1]))
         for m in n[1]:
@@ -491,7 +518,8 @@ def encode():
     encode_s_tab(s_tab)
     encode_token_table()
     encode_cert()
-    encode_tag()
+    encode_chain()
+    #encode_tag()
     encode_template()
     encode_pub()
     
@@ -514,7 +542,7 @@ def listPrint(l):
     print('\n')
 
 def printall():
-    formatPrint(tokenDict)
+    #formatPrint(tokenDict)
     formatPrint(certDict)
     formatPrint(tagDict)
     listPrint(chainList)
@@ -543,7 +571,7 @@ if err == 0:
     expandSigner()
     #print(signer)
     buildTempChain()
-    #print(tempChain)
+    print(tempChainDic)
     #formatPrint(defDict)
     
     handleCons()
@@ -554,6 +582,7 @@ if err == 0:
     buildpub()
     encode()
     printall()
+    
     
     res = trustSchemaModel.encode()
     f.write(res)
