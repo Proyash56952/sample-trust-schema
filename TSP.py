@@ -401,6 +401,7 @@ def buildTemplate(name):
             temp.append(tokenDict[n][0])
         elif(n.startswith ('_')):
             temp.append(160+i)
+            #print(n)
         else:
             temp.append(80+i)
     tempList.append(temp)
@@ -415,11 +416,12 @@ def buildpub():
 
         for c in parent[p]:
             tems = tempDict[c]
-
+            
             for t in tems:
                 tcl = []
+                #print(t)
                 idx = buildTemplate(t)
-                
+                #print(tempList[idx])
                 for key,vals in tempChainDic.items():
                     if(key == c):
                         for val in vals:
@@ -542,9 +544,9 @@ def listPrint(l):
     print('\n')
 
 def printall():
-    #formatPrint(tokenDict)
+    formatPrint(tokenDict)
     formatPrint(certDict)
-    formatPrint(tagDict)
+    #formatPrint(tagDict)
     listPrint(chainList)
     listPrint(tempList)
     listPrint(pubList)
