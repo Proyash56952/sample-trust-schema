@@ -462,11 +462,19 @@ def encode_token_table():
     s = []
     k = []
     for key,val in tokenDict.items():
+        print(val)
         for i in key:
             k.append(ord(i))
-        s.append(val[1])
+        if(val[1] >= 256):
+            s.append(253)
+            a = int(val[1]/256)
+            s.append(a)
+            s.append(int(val[1]-(a*256)))
+        else:
+            s.append(val[1])
         s.append(val[2])
-        
+    print(len(s))
+    print(s)
     trustSchemaModel.inner.tok_val = bytearray(s)
     
 def encode_cert():
@@ -583,7 +591,7 @@ if err == 0:
     #formatPrint(certDict)
     buildpub()
     encode()
-    printall()
+    #printall()
     
     
     res = trustSchemaModel.encode()
